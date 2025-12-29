@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Admin Dashboard - Printer Maintenance System</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap"
+        rel="stylesheet" />
+    <!-- Material Symbols -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Theme Config -->
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#135bec",
+                        "primary-hover": "#0e4bce",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                        "card-light": "#ffffff",
+                        "card-dark": "#1e293b",
+                        "text-main-light": "#0d121b",
+                        "text-main-dark": "#f8fafc",
+                        "text-muted-light": "#4c669a",
+                        "text-muted-dark": "#94a3b8",
+                        "border-light": "#e2e8f0",
+                        "border-dark": "#334155",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        /* Smooth hover animation */
+        .animated-btn {
+            transition: all .25s ease;
+            transform-origin: center;
+        }
+
+        /* Hover grow + shadow */
+        .animated-btn:hover {
+            transform: translateY(-2px) scale(1.01);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, .08);
+        }
+
+        /* Active click ripple */
+        .animated-btn:active {
+            transform: scale(.97);
+        }
+
+        /* glowing primary hover */
+        .glow-primary:hover {
+            box-shadow: 0 0 0 6px rgba(19, 91, 236, 0.12);
+        }
+
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        .dark ::-webkit-scrollbar-thumb {
+            background: #475569;
+        }
+
+        /* CSS Chart Utilities */
+        .chart-bar-v {
+            transition: height 0.5s ease-out;
+        }
+
+        .chart-bar-h {
+            transition: width 0.5s ease-out;
+        }
+
+        .sidebar-link {
+            transition: all .25s ease;
+        }
+
+        .sidebar-link:hover {
+            transform: translateX(4px);
+        }
+
+        .sidebar-active {
+            background: linear-gradient(120deg, #135bec, #0e4bce);
+            color: white !important;
+            box-shadow: 0 10px 20px rgba(19, 91, 236, .25);
+        }
+
+        .card-hover {
+            transition: all .3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 25px 40px rgba(0, 0, 0, .12);
+        }
+
+        .chart-bar-h {
+            transition: width 0.6s ease-in-out;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark text-text-main-light dark:text-text-main-dark font-display antialiased overflow-hidden">
+    <div class="flex h-screen w-full">
+
+        <!-- Sidebar -->
+        <aside
+            class="w-64 h-full flex flex-col bg-card-light dark:bg-card-dark border-r border-border-light dark:border-border-dark flex-shrink-0 z-20">
+            <div class="p-6 flex items-center gap-3">
+                <div class="bg-primary/10 p-2 rounded-lg text-primary">
+                    <span class=" material-symbols-outlined">print</span>
+                </div>
+                <div>
+                    <a href="dashboard.html">
+                        <h1 class="text-base font-bold leading-none tracking-tight">AI Hardware</h1>
+                    </a>
+                    <p class="text-xs text-text-muted-light dark:text-text-muted-dark mt-1">Admin Portal</p>
+                </div>
+            </div>
+            <nav class="flex-1 px-4 py-4 flex flex-col gap-2 overflow-y-auto">
+                <a href="dashboard.html"
+                    class="sidebar-link sidebar-active flex items-center gap-3 px-3 py-2.5 rounded-lg">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">dashboard</span>
+                    <span class="text-sm font-medium">Dashboard</span>
+                </a>
+                <a href="ticket_assigned.html" class="sidebar-link  flex items-center gap-3 px-3 py-2.5 rounded-lg">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">confirmation_number</span>
+                    <span class="text-sm font-medium">Ticket Management</span>
+                </a>
+                <a href="inventory.html" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">inventory_2</span>
+                    <span class="text-sm font-medium">Inventory</span>
+                </a>
+                <div class="my-2 border-t border-border-light dark:border-border-dark"></div>
+                <a href="settings.html" class="sidebar-link  flex items-center gap-3 px-3 py-2.5 rounded-lg">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">settings</span>
+                    <span class="text-sm font-medium">Settings</span>
+                </a>
+            </nav>
+            <a href="profile_dashboard.html" class="animated-btn gap-4 border-t border-border-light dark:border-border-dark block">
+                <div
+                    class="flex items-center gap-3 p-2 rounded-lg hover:bg-background-light dark:hover:bg-background-dark cursor-pointer transition-colors">
+                    <div class="relative w-10 h-10 rounded-full overflow-hidden bg-gray-200">
+                        <img alt="Admin user profile picture" class="object-cover w-full h-full"
+                            data-alt="Profile picture of the admin user, a smiling man with glasses"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDE0SI9jbMqo5HNOembYuEMOwSghvVjT6dwzvgt9Nb9I1gmIDrYIwwV6dSCQ-shrHhTZvvN-NUAnH1kgQTIfFCNZyc0b6p6A_h79oXJB6EZqP8a1pct1vjDotYvXUxkB1lPryf5rDi5pt5cKG-82VuFG1k_ePb55fag635T3NG4nq62Vrd1fssJ_VdhDeLoxSR2v1UWlEa--zuhQyBzFylZ43d2l7FB_fsoxSToN-h-AzLHYsYRHkQK-A8-B_VixPZVe_frE2OQrqI" />
+                    </div>
+                    <div class="flex flex-col overflow-hidden">
+                        <p class="text-sm font-bold truncate">Alex Morgan</p>
+                        <p class="text-xs text-text-muted-light dark:text-text-muted-dark truncate">Super Admin</p>
+                    </div>
+                </div>
+            </a>
+        </aside>
+
+        <!-- Main Content Wrapper -->
+        <main class="flex-1 flex flex-col h-full overflow-hidden relative">
+            <!-- Top Header -->
+            <header
+                class="h-16 flex items-center justify-between px-6 bg-card-light dark:bg-card-dark border-b border-border-light dark:border-border-dark flex-shrink-0">
+                <!-- Search -->
+                <div class="flex items-center w-full max-w-md">
+                    <div class="relative w-full">
+                        <span
+                            class="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted-light dark:text-text-muted-dark material-symbols-outlined text-[20px]">search</span>
+                        <input
+                            class="w-full pl-10 pr-4 py-2 rounded-lg bg-background-light dark:bg-background-dark border-none focus:ring-2 focus:ring-primary text-sm text-text-main-light dark:text-text-main-dark placeholder:text-text-muted-light dark:placeholder:text-text-muted-dark"
+                            placeholder="Search tickets, technicians..." type="text" />
+                    </div>
+                </div>
+                <!-- Right Actions -->
+                <div class="flex items-center gap-4">
+                    <button id="dateButton"
+                        class="animated-btn flex items-center gap-2 px-3 py-2 rounded-lg bg-background-light dark:bg-background-dark text-text-main-light dark:text-text-main-dark hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-sm font-medium">
+                        <span class="material-symbols-outlined text-[18px]">calendar_today</span>
+                        <span id="dateText"></span>
+                    </button>
+                    <button
+                        class="relative p-2 rounded-full hover:bg-background-light dark:hover:bg-background-dark text-text-muted-light dark:text-text-muted-dark transition-colors">
+                        <span class="material-symbols-outlined">notifications</span>
+                        <span
+                            class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-card-light dark:border-card-dark"></span>
+                    </button>
+                    <button onclick="handleLogout()"
+                        class="animated-btn flex items-center gap-2 px-3 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white text-sm font-medium transition-all">
+                        <span class="material-symbols-outlined text-[18px]">logout</span>
+                        Logout
+                    </button>
+                </div>
+            </header>
+
+            <!-- Scrollable Content -->
+            <div class="flex-1 overflow-y-auto bg-background-light dark:bg-background-dark p-6 lg:p-10">
+                <div class="max-w-7xl mx-auto flex flex-col gap-8">
+                    <!-- Page Heading -->
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <h2 class="text-3xl font-bold tracking-tight text-text-main-light dark:text-text-main-dark">
+                                Welcome back, Deva</h2>
+                            <p class="text-text-muted-light dark:text-text-muted-dark mt-1">Real-time maintenance
+                                metrics and technician status.</p>
+                        </div>
+                        <button
+                            class="animated-btn glow-primary flex items-center gap-2 bg-primary hover:bg-primary-hover text-white px-4 py-2.5 rounded-lg shadow-sm shadow-primary/30 transition-all text-sm font-bold">
+                            <span class="material-symbols-outlined text-[20px]">download</span>
+                            Export Report
+                        </button>
+                    </div>
+                    <!-- KPI Cards -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <!-- Card 1 -->
+                        <div
+                            class="card-hover bg-card-light dark:bg-card-dark rounded-xl p-6 border border-border-light dark:border-border-dark shadow-sm">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="bg-blue-50 dark:bg-blue-900/20 p-2 rounded-lg text-primary">
+                                    <span class="material-symbols-outlined">confirmation_number</span>
+                                </div>
+                                <span
+                                    class="flex items-center text-xs font-bold text-green-600 bg-green-50 dark:bg-green-900/20 px-2 py-1 rounded-full">
+                                    <span class="material-symbols-outlined text-[14px] mr-1">trending_up</span>
+                                    12%
+                                </span>
+                            </div>
+                            <h3 class="text-text-muted-light dark:text-text-muted-dark text-sm font-medium">Total
+                                Requests</h3>
+                            <p class="text-3xl font-bold mt-1 text-text-main-light dark:text-text-main-dark">142</p>
+                            <p class="text-xs text-text-muted-light dark:text-text-muted-dark mt-2">Vs. last week</p>
+                        </div>
+                        <!-- Card 2 -->
+                        <div
+                            class="card-hover bg-card-light dark:bg-card-dark rounded-xl p-6 border border-border-light dark:border-border-dark shadow-sm">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="bg-red-50 dark:bg-red-900/20 p-2 rounded-lg text-red-600">
+                                    <span class="material-symbols-outlined">warning</span>
+                                </div>
+                                <span
+                                    class="flex items-center text-xs font-bold text-red-600 bg-red-50 dark:bg-red-900/20 px-2 py-1 rounded-full">
+                                    Attention
+                                </span>
+                            </div>
+                            <h3 class="text-text-muted-light dark:text-text-muted-dark text-sm font-medium">Urgent
+                                Tickets</h3>
+                            <p class="text-3xl font-bold mt-1 text-text-main-light dark:text-text-main-dark">8</p>
+                            <p class="text-xs text-text-muted-light dark:text-text-muted-dark mt-2">Pending immediate
+                                action</p>
+                        </div>
+                        <!-- Card 3 -->
+                        <div
+                            class="card-hover bg-card-light dark:bg-card-dark rounded-xl p-6 border border-border-light dark:border-border-dark shadow-sm">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="bg-purple-50 dark:bg-purple-900/20 p-2 rounded-lg text-purple-600">
+                                    <span class="material-symbols-outlined">engineering</span>
+                                </div>
+                                <span
+                                    class="flex items-center text-xs font-bold text-text-muted-light dark:text-text-muted-dark bg-background-light dark:bg-gray-700 px-2 py-1 rounded-full">
+                                    80% Util
+                                </span>
+                            </div>
+                            <h3 class="text-text-muted-light dark:text-text-muted-dark text-sm font-medium">Active
+                                Technicians</h3>
+                            <p class="text-3xl font-bold mt-1 text-text-main-light dark:text-text-main-dark">12<span
+                                    class="text-lg text-text-muted-light dark:text-text-muted-dark font-normal">/15</span>
+                            </p>
+                            <p class="text-xs text-text-muted-light dark:text-text-muted-dark mt-2">Currently on-site
+                            </p>
+                        </div>
+                        <!-- Card 4 -->
+                        <div
+                            class="card-hover bg-card-light dark:bg-card-dark rounded-xl p-6 border border-border-light dark:border-border-dark shadow-sm">
+                            <div class="flex justify-between items-start mb-4">
+                                <div class="bg-orange-50 dark:bg-orange-900/20 p-2 rounded-lg text-orange-600">
+                                    <span class="material-symbols-outlined">timer</span>
+                                </div>
+                                <span
+                                    class="flex items-center text-xs font-bold text-green-600 bg-green-50 dark:bg-green-900/20 px-2 py-1 rounded-full">
+                                    <span class="material-symbols-outlined text-[14px] mr-1">arrow_downward</span>
+                                    15m
+                                </span>
+                            </div>
+                            <h3 class="text-text-muted-light dark:text-text-muted-dark text-sm font-medium">Resolution
+                                Time</h3>
+                            <p class="text-3xl font-bold mt-1 text-text-main-light dark:text-text-main-dark">4h 30m</p>
+                            <p class="text-xs text-text-muted-light dark:text-text-muted-dark mt-2">Average per ticket
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Charts Section -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Issue Types Breakdown -->
+                        <div
+                            class="animated-btn bg-card-light dark:bg-card-dark rounded-xl border border-border-light dark:border-border-dark p-6 shadow-sm flex flex-col">
+                            <div class="flex justify-between items-center mb-6">
+                                <div>
+                                    <h3 class="text-lg font-bold text-text-main-light dark:text-text-main-dark">Issue
+                                        Types Breakdown</h3>
+                                    <p class="text-sm text-text-muted-light dark:text-text-muted-dark">Last 30 days
+                                        distribution</p>
+                                </div>
+                                <div class="p-2 rounded-lg bg-background-light dark:bg-background-dark">
+                                    <span class="material-symbols-outlined text-text-muted-light">donut_small</span>
+                                </div>
+                            </div>
+                            <div class="flex-1 flex flex-col justify-center gap-5">
+                                <!-- Item 1 -->
+                                <div class="group">
+                                    <div class="flex justify-between text-sm mb-1.5 font-medium">
+                                        <span class="text-text-main-light dark:text-text-main-dark">Paper Jam</span>
+                                        <span class="text-text-muted-light dark:text-text-muted-dark">40%</span>
+                                    </div>
+                                    <div class="w-full bg-background-light dark:bg-gray-700 rounded-full h-3">
+                                        <div class="bg-primary h-3 rounded-full chart-bar-h" data-width="40%"></div>
+                                    </div>
+                                </div>
+                                <!-- Item 2 -->
+                                <div class="group">
+                                    <div class="flex justify-between text-sm mb-1.5 font-medium">
+                                        <span class="text-text-main-light dark:text-text-main-dark">Toner
+                                            Replacement</span>
+                                        <span class="text-text-muted-light dark:text-text-muted-dark">30%</span>
+                                    </div>
+                                    <div class="w-full bg-background-light dark:bg-gray-700 rounded-full h-3">
+                                        <div class="bg-blue-400 h-3 rounded-full chart-bar-h" data-width="30%"></div>
+                                    </div>
+                                </div>
+                                <!-- Item 3 -->
+                                <div class="group">
+                                    <div class="flex justify-between text-sm mb-1.5 font-medium">
+                                        <span class="text-text-main-light dark:text-text-main-dark">Network
+                                            Connectivity</span>
+                                        <span class="text-text-muted-light dark:text-text-muted-dark">20%</span>
+                                    </div>
+                                    <div class="w-full bg-background-light dark:bg-gray-700 rounded-full h-3">
+                                        <div class="bg-purple-500 h-3 rounded-full chart-bar-h" data-width="20%">
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Item 4 -->
+                                <div class="group">
+                                    <div class="flex justify-between text-sm mb-1.5 font-medium">
+                                        <span class="text-text-main-light dark:text-text-main-dark">Hardware
+                                            Failure</span>
+                                        <span class="text-text-muted-light dark:text-text-muted-dark">10%</span>
+                                    </div>
+                                    <div class="w-full bg-background-light dark:bg-gray-700 rounded-full h-3">
+                                        <div class="bg-orange-400 h-3 rounded-full chart-bar-h" data-width="10%">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Department Complaints -->
+                        <div
+                            class="animated-btn bg-card-light dark:bg-card-dark rounded-xl border border-border-light dark:border-border-dark p-6 shadow-sm flex flex-col">
+                            <div class="flex justify-between items-center mb-6">
+                                <div>
+                                    <h3 class="text-lg font-bold text-text-main-light dark:text-text-main-dark">
+                                        Department-wise Complaints</h3>
+                                    <p class="text-sm text-text-muted-light dark:text-text-muted-dark">Volume by
+                                        department</p>
+                                </div>
+                                <div class="p-2 rounded-lg bg-background-light dark:bg-background-dark">
+                                    <span class="material-symbols-outlined text-text-muted-light">bar_chart</span>
+                                </div>
+                            </div>
+                            <div
+                                class="flex-1 flex items-end gap-2 sm:gap-4 h-48 sm:h-56 pb-2 border-b border-border-light dark:border-border-dark">
+                                <!-- Bar Finance -->
+                                <div class="flex-1 flex flex-col items-center gap-2 group cursor-pointer">
+                                    <div
+                                        class="relative w-full bg-primary/10 dark:bg-primary/20 rounded-t-lg h-full flex items-end group-hover:bg-primary/20 transition-colors">
+                                        <div class="w-full bg-primary rounded-t-lg relative chart-bar-v"
+                                            style="height: 85%;">
+                                            <div
+                                                class="opacity-0 group-hover:opacity-100 absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-xs py-1 px-2 rounded transition-opacity">
+                                                85</div>
+                                        </div>
+                                    </div>
+                                    <span
+                                        class="text-xs font-bold text-text-muted-light dark:text-text-muted-dark">Finance</span>
+                                </div>
+                                <!-- Bar HR -->
+                                <div class="flex-1 flex flex-col items-center gap-2 group cursor-pointer">
+                                    <div
+                                        class="relative w-full bg-primary/10 dark:bg-primary/20 rounded-t-lg h-full flex items-end group-hover:bg-primary/20 transition-colors">
+                                        <div class="w-full bg-blue-400 rounded-t-lg relative chart-bar-v"
+                                            style="height: 45%;">
+                                            <div
+                                                class="opacity-0 group-hover:opacity-100 absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-xs py-1 px-2 rounded transition-opacity">
+                                                45</div>
+                                        </div>
+                                    </div>
+                                    <span
+                                        class="text-xs font-bold text-text-muted-light dark:text-text-muted-dark">HR</span>
+                                </div>
+                                <!-- Bar Sales -->
+                                <div class="flex-1 flex flex-col items-center gap-2 group cursor-pointer">
+                                    <div
+                                        class="relative w-full bg-primary/10 dark:bg-primary/20 rounded-t-lg h-full flex items-end group-hover:bg-primary/20 transition-colors">
+                                        <div class="w-full bg-primary rounded-t-lg relative chart-bar-v"
+                                            style="height: 25%;">
+                                            <div
+                                                class="opacity-0 group-hover:opacity-100 absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-xs py-1 px-2 rounded transition-opacity">
+                                                25</div>
+                                        </div>
+                                    </div>
+                                    <span
+                                        class="text-xs font-bold text-text-muted-light dark:text-text-muted-dark">Sales</span>
+                                </div>
+                                <!-- Bar IT -->
+                                <div class="flex-1 flex flex-col items-center gap-2 group cursor-pointer">
+                                    <div
+                                        class="relative w-full bg-primary/10 dark:bg-primary/20 rounded-t-lg h-full flex items-end group-hover:bg-primary/20 transition-colors">
+                                        <div class="w-full bg-blue-400 rounded-t-lg relative chart-bar-v"
+                                            style="height: 60%;">
+                                            <div
+                                                class="opacity-0 group-hover:opacity-100 absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-xs py-1 px-2 rounded transition-opacity">
+                                                60</div>
+                                        </div>
+                                    </div>
+                                    <span
+                                        class="text-xs font-bold text-text-muted-light dark:text-text-muted-dark">IT</span>
+                                </div>
+                                <!-- Bar Legal -->
+                                <div class="flex-1 flex flex-col items-center gap-2 group cursor-pointer">
+                                    <div
+                                        class="relative w-full bg-primary/10 dark:bg-primary/20 rounded-t-lg h-full flex items-end group-hover:bg-primary/20 transition-colors">
+                                        <div class="w-full bg-primary rounded-t-lg relative chart-bar-v"
+                                            style="height: 15%;">
+                                            <div
+                                                class="opacity-0 group-hover:opacity-100 absolute -top-8 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-xs py-1 px-2 rounded transition-opacity">
+                                                15</div>
+                                        </div>
+                                    </div>
+                                    <span
+                                        class="text-xs font-bold text-text-muted-light dark:text-text-muted-dark">Legal</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Recent Activity Table -->
+                    <div
+                        class="bg-card-light dark:bg-card-dark rounded-xl border border-border-light dark:border-border-dark overflow-hidden shadow-sm">
+                        <div
+                            class="p-6 border-b border-border-light dark:border-border-dark flex justify-between items-center">
+                            <h3 class="text-lg font-bold text-text-main-light dark:text-text-main-dark">Recent Tickets
+                            </h3>
+                            <a class="text-sm font-semibold text-primary hover:text-primary-hover"
+                                href="#admin1_user.html">View All</a>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm text-text-muted-light dark:text-text-muted-dark">
+                                <thead
+                                    class="bg-background-light dark:bg-background-dark text-xs uppercase font-bold text-text-main-light dark:text-text-main-dark">
+                                    <tr>
+                                        <th class="px-6 py-4">Ticket ID</th>
+                                        <th class="px-6 py-4">Issue</th>
+                                        <th class="px-6 py-4">Department</th>
+                                        <th class="px-6 py-4">Technician</th>
+                                        <th class="px-6 py-4">Status</th>
+                                        <th class="px-6 py-4">Last Updated</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-border-light dark:divide-border-dark">
+                                    <tr
+                                        class="hover:bg-background-light/50 dark:hover:bg-gray-800/50 transition-colors">
+                                        <td class="px-6 py-4 font-medium text-text-main-light dark:text-text-main-dark">
+                                            #TR-8092</td>
+                                        <td class="px-6 py-4">HP LaserJet - Paper Jam</td>
+                                        <td class="px-6 py-4">Finance</td>
+                                        <td class="px-6 py-4 flex items-center gap-2">
+                                            <div class="w-6 h-6 rounded-full bg-blue-100 bg-center bg-cover"
+                                                data-alt="Small avatar of technician"
+                                                style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDJXwNytsMDxChzkxOJPvlYXp2sFkRi67eZv3OTVZuihp-yy_dIVXeSQ6YM_xR_MEURSINfilQmiOgZnF3zH1kBPflvM4Yn66Yp4H6V_19JTzRBqbSn4PAmau1RZodkXGb1ljhE2EvnYjeWxD4Ozb-w3dHtcCOIWZf5hMLoSTjilibGJWj5nptKJkNu5b2CI7CtodbmKVhoKmYM0lCimdiVTWYya1MvgRwt5BKVuta9vUgzwOk8irV2nt2GsB_HYBHUcFRp8f_vI6M')">
+                                            </div>
+                                            Mark S.
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <span
+                                                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-500">
+                                                In Progress
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4">20 mins ago</td>
+                                    </tr>
+                                    <tr
+                                        class="hover:bg-background-light/50 dark:hover:bg-gray-800/50 transition-colors">
+                                        <td class="px-6 py-4 font-medium text-text-main-light dark:text-text-main-dark">
+                                            #TR-8091</td>
+                                        <td class="px-6 py-4">Canon XR - Toner Low</td>
+                                        <td class="px-6 py-4">HR Dept</td>
+                                        <td class="px-6 py-4 flex items-center gap-2">
+                                            <div
+                                                class="w-6 h-6 rounded-full bg-purple-100 flex items-center justify-center text-xs font-bold text-purple-600">
+                                                JD</div>
+                                            Jane D.
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <span
+                                                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-500">
+                                                Resolved
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4">2 hours ago</td>
+                                    </tr>
+                                    <tr
+                                        class="hover:bg-background-light/50 dark:hover:bg-gray-800/50 transition-colors">
+                                        <td class="px-6 py-4 font-medium text-text-main-light dark:text-text-main-dark">
+                                            #TR-8090</td>
+                                        <td class="px-6 py-4">Network Error - Floor 2</td>
+                                        <td class="px-6 py-4">IT Ops</td>
+                                        <td class="px-6 py-4 text-text-muted-light dark:text-text-muted-dark italic">
+                                            Unassigned</td>
+                                        <td class="px-6 py-4">
+                                            <span
+                                                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-500">
+                                                Open
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4">4 hours ago</td>
+                                    </tr>
+                                    <tr
+                                        class="hover:bg-background-light/50 dark:hover:bg-gray-800/50 transition-colors">
+                                        <td class="px-6 py-4 font-medium text-text-main-light dark:text-text-main-dark">
+                                            #TR-8089</td>
+                                        <td class="px-6 py-4">Scanner Malfunction</td>
+                                        <td class="px-6 py-4">Legal</td>
+                                        <td class="px-6 py-4 flex items-center gap-2">
+                                            <div class="w-6 h-6 rounded-full bg-blue-100 bg-center bg-cover"
+                                                data-alt="Small avatar of technician"
+                                                style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDaaVyq38yVAXQuUDut2KbPF5sQkXTP9GnSGzRNY4xyxsFPzFEs3SYCP8fy86nq6RIa-IRmhfxQmVlnDksDtaGMC6LxMNY8ORiBMj-qegCm_L6DG5S-N_Df3qV5MFk3E_wHwo4PwXyHYB33XPwoVuhWykvw2N2_Mbsd0ydf3jby80g0v8km4so0II3FS91JTBpCOh9omOyBVj5ZPlWfP3aZQ_dmW2g15nfQ-5Vz8j5Cl9nv1rWiy0WrJFsFx2QxsLvXYbgfxHlfX8o')">
+                                            </div>
+                                            Mike R.
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <span
+                                                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-500">
+                                                Review
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4">Yesterday</td>
+                                    </tr>
+                                    <tr
+                                        class="hover:bg-background-light/50 dark:hover:bg-gray-800/50 transition-colors">
+                                        <td class="px-6 py-4 font-medium text-text-main-light dark:text-text-main-dark">
+                                            #TR-8088</td>
+                                        <td class="px-6 py-4">Maintenance Check</td>
+                                        <td class="px-6 py-4">Sales</td>
+                                        <td class="px-6 py-4 flex items-center gap-2">
+                                            <div
+                                                class="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center text-xs font-bold text-green-600">
+                                                SL</div>
+                                            Sarah L.
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <span
+                                                class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-500">
+                                                Resolved
+                                            </span>
+                                        </td>
+                                        <td class="px-6 py-4">Yesterday</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script>
+        // format date as "MMM DD, YYYY"
+        function formatDate(date) {
+            return date.toLocaleDateString("en-US", {
+                month: "short",
+                day: "2-digit",
+                year: "numeric"
+            });
+        }
+
+        // set current date
+        function setToday() {
+            const today = new Date();
+            document.getElementById("dateText").innerText = formatDate(today);
+        }
+
+        // run on load
+        setToday();
+
+        // optional: refresh at midnight automatically
+        setInterval(setToday, 60000);
+
+        // Sidebar link active state handling
+        const links = document.querySelectorAll(".sidebar-link");
+
+        links.forEach(link => {
+            link.addEventListener("click", () => {
+                links.forEach(l => l.classList.remove("sidebar-active"));
+                link.classList.add("sidebar-active");
+            });
+        });
+
+        // Animate horizontal chart bars
+        document.addEventListener("DOMContentLoaded", () => {
+            const bars = document.querySelectorAll(".chart-bar-h");
+
+            bars.forEach(bar => {
+                bar.style.width = "0%";
+
+                setTimeout(() => {
+                    bar.style.width = bar.getAttribute("data-width");
+                }, 300);
+            });
+        });
+
+        // Handle logout action
+        function handleLogout() {
+            const confirmLogout = confirm("Are you sure you want to log out?");
+            if (confirmLogout) {
+                // redirect to login page
+                window.location.href = "login.html";
+            }
+        }
+
+    </script>
+
+</body>
+
+</html>
