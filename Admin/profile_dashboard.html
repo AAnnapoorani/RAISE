@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Profile - Printer Maintenance System</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <!-- Material Symbols -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#135bec",
+                        "primary-hover": "#0e4bce",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                        "card-light": "#ffffff",
+                        "card-dark": "#1e293b",
+                        "text-main-light": "#0d121b",
+                        "text-main-dark": "#f8fafc",
+                        "text-muted-light": "#4c669a",
+                        "text-muted-dark": "#94a3b8",
+                        "border-light": "#e2e8f0",
+                        "border-dark": "#334155",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        .animated-btn { transition: all .25s ease; transform-origin: center; }
+        .animated-btn:hover { transform: translateY(-2px) scale(1.01); box-shadow: 0 12px 25px rgba(0,0,0,.08); }
+        .animated-btn:active { transform: scale(.97); }
+        .glow-primary:hover { box-shadow: 0 0 0 6px rgba(19,91,236,0.12); }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .dark ::-webkit-scrollbar-thumb { background: #475569; }
+        .sidebar-link { transition: all .25s ease; }
+        .sidebar-link:hover { transform: translateX(4px); }
+        .sidebar-active { background: linear-gradient(120deg,#135bec,#0e4bce); color: white !important; box-shadow: 0 10px 20px rgba(19,91,236,.25); }
+        .card-hover { transition: all .3s ease; }
+        .card-hover:hover { transform: translateY(-6px); box-shadow: 0 25px 40px rgba(0,0,0,.12); }
+    </style>
+</head>
+
+<body class="bg-background-light dark:bg-background-dark text-text-main-light dark:text-text-main-dark font-display antialiased overflow-hidden">
+    <div class="flex h-screen w-full">
+
+        <!-- Sidebar -->
+        <aside
+            class="w-64 h-full flex flex-col bg-card-light dark:bg-card-dark border-r border-border-light dark:border-border-dark flex-shrink-0 z-20">
+            <div class="p-6 flex items-center gap-3">
+                <div class="bg-primary/10 p-2 rounded-lg text-primary">
+                    <span class=" material-symbols-outlined">print</span>
+                </div>
+                <div>
+                    <a href="dashboard.html">
+                        <h1 class="text-base font-bold leading-none tracking-tight">AI Hardware</h1>
+                    </a>
+                    <p class="text-xs text-text-muted-light dark:text-text-muted-dark mt-1">Admin Portal</p>
+                </div>
+            </div>
+            <nav class="flex-1 px-4 py-4 flex flex-col gap-2 overflow-y-auto">
+                <a href="dashboard.html"
+                    class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">dashboard</span>
+                    <span class="text-sm font-medium">Dashboard</span>
+                </a>
+                <a href="ticket_assigned.html" class="sidebar-link  flex items-center gap-3 px-3 py-2.5 rounded-lg">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">confirmation_number</span>
+                    <span class="text-sm font-medium">Ticket Management</span>
+                </a>
+                <a href="inventory.html" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">inventory_2</span>
+                    <span class="text-sm font-medium">Inventory</span>
+                </a>
+                <div class="my-2 border-t border-border-light dark:border-border-dark"></div>
+                <a href="settings.html" class="sidebar-link  flex items-center gap-3 px-3 py-2.5 rounded-lg">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">settings</span>
+                    <span class="text-sm font-medium">Settings</span>
+                </a>
+            </nav>
+            <a href="profile_dashboard.html" class="animated-btn gap-4 border-t border-border-light dark:border-border-dark block">
+                <div
+                    class="flex items-center gap-3 p-2 rounded-lg hover:bg-background-light dark:hover:bg-background-dark cursor-pointer transition-colors">
+                    <div class="relative w-10 h-10 rounded-full overflow-hidden bg-gray-200">
+                        <img alt="Admin user profile picture" class="object-cover w-full h-full"
+                            data-alt="Profile picture of the admin user, a smiling man with glasses"
+                            src="https://lh3.googleusercontent.com/aida-public/AB6AXuDE0SI9jbMqo5HNOembYuEMOwSghvVjT6dwzvgt9Nb9I1gmIDrYIwwV6dSCQ-shrHhTZvvN-NUAnH1kgQTIfFCNZyc0b6p6A_h79oXJB6EZqP8a1pct1vjDotYvXUxkB1lPryf5rDi5pt5cKG-82VuFG1k_ePb55fag635T3NG4nq62Vrd1fssJ_VdhDeLoxSR2v1UWlEa--zuhQyBzFylZ43d2l7FB_fsoxSToN-h-AzLHYsYRHkQK-A8-B_VixPZVe_frE2OQrqI" />
+                    </div>
+                    <div class="flex flex-col overflow-hidden">
+                        <p class="text-sm font-bold truncate">Alex Morgan</p>
+                        <p class="text-xs text-text-muted-light dark:text-text-muted-dark truncate">Super Admin</p>
+                    </div>
+                </div>
+            </a>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col h-full overflow-hidden relative">
+            <!-- Top Header -->
+            <header class="h-16 flex items-center justify-between px-6 bg-card-light dark:bg-card-dark border-b border-border-light dark:border-border-dark flex-shrink-0">
+                <div class="flex items-center w-full max-w-md">
+                    <div class="relative w-full">
+                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted-light dark:text-text-muted-dark material-symbols-outlined text-[20px]">search</span>
+                        <input class="w-full pl-10 pr-4 py-2 rounded-lg bg-background-light dark:bg-background-dark border-none focus:ring-2 focus:ring-primary text-sm text-text-main-light dark:text-text-main-dark placeholder:text-text-muted-light dark:placeholder:text-text-muted-dark"
+                            placeholder="Search profile..." type="text" />
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button class="animated-btn flex items-center gap-2 px-3 py-2 rounded-lg bg-background-light dark:bg-background-dark text-text-main-light dark:text-text-main-dark hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-sm font-medium">
+                        <span class="material-symbols-outlined text-[18px]">calendar_today</span>
+                        <span>Dec 29, 2025</span>
+                    </button>
+                    <button class="relative p-2 rounded-full hover:bg-background-light dark:hover:bg-background-dark text-text-muted-light dark:text-text-muted-dark transition-colors">
+                        <span class="material-symbols-outlined">notifications</span>
+                        <span class="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full border-2 border-card-light dark:border-card-dark"></span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Scrollable Content -->
+            <div class="flex-1 overflow-y-auto bg-background-light dark:bg-background-dark p-6 lg:p-10">
+                <div class="max-w-4xl mx-auto flex flex-col gap-8">
+
+                    <!-- Profile Header -->
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div class="flex items-center gap-4">
+                            <div class="relative w-24 h-24 rounded-full overflow-hidden border-4 border-primary">
+                                <img src="https://via.placeholder.com/150" alt="User Avatar" class="object-cover w-full h-full">
+                            </div>
+                            <div>
+                                <h2 class="text-3xl font-bold text-text-main-light dark:text-text-main-dark">Alex Morgan</h2>
+                                <p class="text-text-muted-light dark:text-text-muted-dark mt-1">Super Admin</p>
+                            </div>
+                        </div>
+                        <button class="animated-btn glow-primary bg-primary hover:bg-primary-hover text-white px-6 py-2 rounded-lg text-sm font-bold">
+                            Edit Profile
+                        </button>
+                    </div>
+
+                    <!-- Profile Info Cards -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+
+                        <!-- Personal Info -->
+                        <div class="card-hover bg-card-light dark:bg-card-dark rounded-xl p-6 border border-border-light dark:border-border-dark shadow-sm">
+                            <h3 class="text-lg font-bold text-text-main-light dark:text-text-main-dark mb-4">Personal Information</h3>
+                            <ul class="text-text-muted-light dark:text-text-muted-dark space-y-2">
+                                <li><strong>Email:</strong> alex.morgan@example.com</li>
+                                <li><strong>Phone:</strong> +91 98765 43210</li>
+                                <li><strong>Joined:</strong> Jan 12, 2024</li>
+                                <li><strong>Department:</strong> IT & Systems</li>
+                            </ul>
+                        </div>
+
+                        <!-- Security & Settings -->
+                        <div class="card-hover bg-card-light dark:bg-card-dark rounded-xl p-6 border border-border-light dark:border-border-dark shadow-sm">
+                            <h3 class="text-lg font-bold text-text-main-light dark:text-text-main-dark mb-4">Security & Settings</h3>
+                            <ul class="text-text-muted-light dark:text-text-muted-dark space-y-2">
+                                <li><strong>Password:</strong> ******** <button class="text-primary hover:text-primary-hover ml-2 text-sm">Change</button></li>
+                                <li><strong>Two-Factor Authentication:</strong> Enabled <button class="text-primary hover:text-primary-hover ml-2 text-sm">Manage</button></li>
+                                <li><strong>Activity Logs:</strong> Last login 2 days ago <button class="text-primary hover:text-primary-hover ml-2 text-sm">View</button></li>
+                            </ul>
+                        </div>
+
+                        <!-- Preferences -->
+                        <div class="card-hover bg-card-light dark:bg-card-dark rounded-xl p-6 border border-border-light dark:border-border-dark shadow-sm md:col-span-2">
+                            <h3 class="text-lg font-bold text-text-main-light dark:text-text-main-dark mb-4">Preferences</h3>
+                            <div class="flex flex-col sm:flex-row sm:items-center gap-4">
+                                <div class="flex items-center gap-2">
+                                    <input type="checkbox" id="emailAlerts" class="accent-primary" checked>
+                                    <label for="emailAlerts" class="text-text-main-light dark:text-text-main-dark">Email Alerts</label>
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <input type="checkbox" id="darkModePref" class="accent-primary">
+                                    <label for="darkModePref" class="text-text-main-light dark:text-text-main-dark">Enable Dark Mode</label>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const links = document.querySelectorAll(".sidebar-link");
+        links.forEach(link => {
+            link.addEventListener("click", () => {
+                links.forEach(l => l.classList.remove("sidebar-active"));
+                link.classList.add("sidebar-active");
+            });
+        });
+    </script>
+</body>
+
+</html>
