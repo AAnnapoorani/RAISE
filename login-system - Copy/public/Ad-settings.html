@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en">
+
+<!-- ==========================================
+     ADMIN SETTINGS PAGE
+     ==========================================
+     Admin account settings and configuration
+     Features: Password change, theme toggle, account management
+========================================== -->
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>AAI Hardware - Settings</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap"
+        rel="stylesheet" />
+    <!-- Material Symbols -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <!-- Theme Config -->
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#135bec",
+                        "primary-hover": "#0e4bce",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                        "card-light": "#ffffff",
+                        "card-dark": "#1e293b",
+                        "text-main-light": "#0d121b",
+                        "text-main-dark": "#f8fafc",
+                        "text-muted-light": "#4c669a",
+                        "text-muted-dark": "#94a3b8",
+                        "border-light": "#e2e8f0",
+                        "border-dark": "#334155",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                },
+            },
+        }
+
+        // Immediately check for saved theme preference
+        const savedTheme = localStorage.getItem("theme");
+
+        // Check if user previously chose dark mode OR if they haven't chosen but their OS is dark
+        if (savedTheme === "dark" || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add("dark");
+        } else {
+            document.documentElement.classList.remove("dark");
+        }
+    </script>
+    <style>
+        /* Smooth hover animation */
+        .animated-btn {
+            transition: all .25s ease;
+            transform-origin: center;
+        }
+
+        /* Hover grow + shadow */
+        .animated-btn:hover {
+            transform: translateY(-2px) scale(1.01);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, .08);
+        }
+
+        /* Active click ripple */
+        .animated-btn:active {
+            transform: scale(.97);
+        }
+
+        /* glowing primary hover */
+        .glow-primary:hover {
+            box-shadow: 0 0 0 6px rgba(19, 91, 236, 0.12);
+        }
+
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        .dark ::-webkit-scrollbar-thumb {
+            background: #475569;
+        }
+
+        /* CSS Chart Utilities */
+        .chart-bar-v {
+            transition: height 0.5s ease-out;
+        }
+
+        .chart-bar-h {
+            transition: width 0.5s ease-out;
+        }
+
+        .sidebar-link {
+            transition: all .25s ease;
+        }
+
+        .sidebar-link:hover {
+            transform: translateX(4px);
+        }
+
+        .sidebar-active {
+            background: linear-gradient(120deg, #135bec, #0e4bce);
+            color: white !important;
+            box-shadow: 0 10px 20px rgba(19, 91, 236, .25);
+        }
+
+        .card-hover {
+            transition: all .3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 25px 40px rgba(0, 0, 0, .12);
+        }
+
+        .chart-bar-h {
+            transition: width 0.6s ease-in-out;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark text-text-main-light dark:text-text-main-dark font-display antialiased overflow-hidden">
+    <script src="components/toast.js"></script>
+    <script src="config.js"></script>
+
+    
+    <!-- SECTION: Layout shell (sidebar + settings content) -->
+    <div class="flex h-screen w-full">
+
+        <!-- SECTION: Sidebar navigation -->
+        <aside
+            class="w-64 h-full flex flex-col bg-card-light dark:bg-card-dark border-r border-border-light dark:border-border-dark flex-shrink-0 z-20">
+            <div class="p-6 flex items-center gap-3">
+                <div class="p-2 rounded-lg flex items-center justify-center">
+                    <img src="logo.jpeg" class="w-10 h-10 object-cover rounded" alt="icon">
+                </div>
+                <div>
+                    <a href="Ad-dash.html">
+                        <h1 class="text-base font-bold leading-none tracking-tight">AAI Hardware</h1>
+                    </a>
+                    <p class="text-xs text-text-muted-light dark:text-text-muted-dark mt-1">Admin Portal</p>
+                </div>
+            </div>
+            <nav class="flex-1 px-4 py-4 flex flex-col gap-2 overflow-y-auto">
+                <a href="Ad-dash.html" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">dashboard</span>
+                    <span class="text-sm font-medium">Dashboard</span>
+                </a>
+                <a href="Ad-ticket.html" class="sidebar-link  flex items-center gap-3 px-3 py-2.5 rounded-lg">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">confirmation_number</span>
+                    <span class="text-sm font-medium">Ticket Management</span>
+                </a>
+                <a href="Ad-inventory.html" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">inventory_2</span>
+                    <span class="text-sm font-medium">Inventory</span>
+                </a>
+                <div class="my-2 border-t border-border-light dark:border-border-dark"></div>
+                <a href="Ad-settings.html"
+                    class="sidebar-link sidebar-active flex items-center gap-3 px-3 py-2.5 rounded-lg">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">settings</span>
+                    <span class="text-sm font-medium">Settings</span>
+                </a>
+            </nav>
+            <a href="Ad-profile_dashboard.html"
+                class="animated-btn gap-4 border-t border-border-light dark:border-border-dark block">
+                <div
+                    class="flex items-center gap-3 p-2 rounded-lg hover:bg-background-light dark:hover:bg-background-dark cursor-pointer transition-colors">
+                    <div class="relative w-10 h-10 rounded-full overflow-hidden bg-gray-200">
+                        <img id="sidebar-avatar" alt="Admin user profile picture" class="object-cover w-full h-full"
+                            src="https://ui-avatars.com/api/?name=Admin&background=random" />
+                    </div>
+                    <div class="flex flex-col overflow-hidden">
+                        <p id="sidebar-name" class="text-sm font-bold truncate">Loading...</p>
+                        <p id="sidebar-role" class="text-xs text-text-muted-light dark:text-text-muted-dark truncate">
+                            ...</p>
+                    </div>
+                </div>
+            </a>
+        </aside>
+
+        <!-- SECTION: Settings main content -->
+        <main class="flex-1 flex flex-col h-full overflow-hidden relative">
+            <!-- Top Header -->
+            <header
+                class="h-16 flex items-center justify-between px-6 bg-card-light dark:bg-card-dark border-b border-border-light dark:border-border-dark flex-shrink-0">
+                <!-- Search -->
+                <div class="flex items-center w-full max-w-md">
+                    <div class="relative w-full">
+                    </div>
+                </div>
+                <!-- Right Actions -->
+                <div class="flex items-center gap-4">
+                    <button id="dateButton"
+                        class="animated-btn flex items-center gap-2 px-3 py-2 rounded-lg bg-background-light dark:bg-background-dark text-text-main-light dark:text-text-main-dark hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-sm font-medium">
+                        <span class="material-symbols-outlined text-[18px]">calendar_today</span>
+                        <span id="dateText"></span>
+                    </button>
+                    <button onclick="handleLogout()"
+                        class="animated-btn flex items-center gap-2 px-3 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white text-sm font-medium transition-all">
+                        <span class="material-symbols-outlined text-[18px]">logout</span>
+                        Logout
+                    </button>
+                </div>
+            </header>
+
+            <!-- Top Heading Area -->
+            <div class="flex-1 overflow-y-auto bg-background-light dark:bg-background-dark p-6 lg:p-10">
+                <div class="max-w-5xl mx-auto flex flex-col gap-8">
+                    <div>
+                        <h2 class="text-3xl font-bold tracking-tight text-text-main-light dark:text-text-main-dark">
+                            Account Settings</h2>
+                        <p class="text-text-muted-light dark:text-text-muted-dark mt-1">Manage your security
+                            preferences, notifications, and dashboard configuration.</p>
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div class="lg:col-span-2 flex flex-col gap-8">
+                            <div
+                                class="bg-card-light dark:bg-card-dark rounded-xl border border-border-light dark:border-border-dark p-6 shadow-sm">
+                                <h3 class="text-lg font-bold text-text-main-light dark:text-text-main-dark mb-4">
+                                    Security</h3>
+                                <p class="text-sm text-text-muted-light dark:text-text-muted-dark mb-6">Ensure your
+                                    account is using a long, random password to stay secure.</p>
+
+                                <!-- Password Update Form -->
+                                <form class="max-w-xl" onsubmit="handlePasswordUpdate(event)">
+                                    <div class="space-y-4">
+                                        <div>
+                                            <label
+                                                class="block text-sm font-semibold text-text-main-light dark:text-text-main-dark mb-1.5">Current
+                                                Password</label>
+                                            <div class="relative group">
+                                                <input id="current-password"
+                                                    class="w-full rounded-lg bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark pl-4 pr-10 py-2.5 text-text-main-light dark:text-text-main-dark focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all placeholder:text-text-muted-light text-sm"
+                                                    placeholder="••••••••" type="password" required />
+                                                <button type="button" onclick="togglePassword(this)"
+                                                    class="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted-light hover:text-primary transition-colors cursor-pointer outline-none">
+                                                    <span
+                                                        class="material-symbols-outlined text-[20px]">visibility_off</span>
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                            <div>
+                                                <label
+                                                    class="block text-sm font-semibold text-text-main-light dark:text-text-main-dark mb-1.5">New
+                                                    Password</label>
+                                                <div class="relative group">
+                                                    <input id="new-password"
+                                                        class="w-full rounded-lg bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark pl-4 pr-10 py-2.5 text-text-main-light dark:text-text-main-dark focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all placeholder:text-text-muted-light text-sm"
+                                                        type="password" required />
+                                                    <button type="button" onclick="togglePassword(this)"
+                                                        class="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted-light hover:text-primary transition-colors cursor-pointer outline-none">
+                                                        <span
+                                                            class="material-symbols-outlined text-[20px]">visibility_off</span>
+                                                    </button>
+                                                </div>
+                                            </div>
+
+                                            <div>
+                                                <label
+                                                    class="block text-sm font-semibold text-text-main-light dark:text-text-main-dark mb-1.5">Confirm
+                                                    Password</label>
+                                                <div class="relative group">
+                                                    <input id="confirm-password"
+                                                        class="w-full rounded-lg bg-background-light dark:bg-background-dark border border-border-light dark:border-border-dark pl-4 pr-10 py-2.5 text-text-main-light dark:text-text-main-dark focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all placeholder:text-text-muted-light text-sm"
+                                                        type="password" required />
+                                                    <button type="button" onclick="togglePassword(this)"
+                                                        class="absolute right-3 top-1/2 -translate-y-1/2 text-text-muted-light hover:text-primary transition-colors cursor-pointer outline-none">
+                                                        <span
+                                                            class="material-symbols-outlined text-[20px]">visibility_off</span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mt-6 flex justify-end">
+                                        <button type="submit"
+                                            class="bg-primary hover:bg-primary-hover text-white px-6 py-2.5 rounded-lg shadow-sm shadow-primary/30 transition-all text-sm font-bold">
+                                            Update Password
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="lg:col-span-1 flex flex-col gap-8">
+                            <!-- <div
+                                class="bg-card-light dark:bg-card-dark rounded-xl border border-border-light dark:border-border-dark p-6 shadow-sm">
+                                <h3 class="text-lg font-bold text-text-main-light dark:text-text-main-dark mb-4">
+                                    Notification Preferences</h3>
+                                <div class="space-y-6">
+                                    <div class="flex items-start justify-between gap-4">
+                                        <div>
+                                            <p
+                                                class="text-sm font-semibold text-text-main-light dark:text-text-main-dark">
+                                                Email Alerts</p>
+                                            <p class="text-xs text-text-muted-light dark:text-text-muted-dark mt-0.5">
+                                                Receive critical updates via email</p>
+                                        </div>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input checked="" class="sr-only peer" type="checkbox" value="" />
+                                            <div
+                                                class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary dark:peer-focus:ring-primary rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary">
+                                            </div>
+                                        </label>
+                                    </div>
+                                    <div class="flex items-start justify-between gap-4">
+                                        <div>
+                                            <p
+                                                class="text-sm font-semibold text-text-main-light dark:text-text-main-dark">
+                                                In-app Notifications</p>
+                                            <p class="text-xs text-text-muted-light dark:text-text-muted-dark mt-0.5">
+                                                Popups for new tickets</p>
+                                        </div>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input checked="" class="sr-only peer" type="checkbox" value="" />
+                                            <div
+                                                class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary dark:peer-focus:ring-primary rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary">
+                                            </div>
+                                        </label>
+                                    </div>
+                                    <div class="flex items-start justify-between gap-4">
+                                        <div>
+                                            <p
+                                                class="text-sm font-semibold text-text-main-light dark:text-text-main-dark">
+                                                Weekly Reports</p>
+                                            <p class="text-xs text-text-muted-light dark:text-text-muted-dark mt-0.5">
+                                                Summary of team performance</p>
+                                        </div>
+                                        <label class="relative inline-flex items-center cursor-pointer">
+                                            <input class="sr-only peer" type="checkbox" value="" />
+                                            <div
+                                                class="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-2 peer-focus:ring-primary dark:peer-focus:ring-primary rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-primary">
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div> -->
+                            <div
+                                class="bg-gradient-to-br from-card-light to-blue-50/50 dark:from-card-dark dark:to-blue-900/10 rounded-xl border border-border-light dark:border-border-dark p-6 shadow-sm">
+                                <div class="flex items-center gap-2 mb-4 text-primary">
+                                    <span class="material-symbols-outlined">admin_panel_settings</span>
+                                    <h3 class="text-xs uppercase font-bold tracking-wider">Admin Settings</h3>
+                                </div>
+                                <div class="flex items-center justify-between">
+                                    <div>
+                                        <p class="text-sm font-bold text-text-main-light dark:text-text-main-dark">
+                                            Appearance
+                                        <p>
+                                        <p class="text-xs text-text-muted-light dark:text-text-muted-dark mt-1">Switch
+                                            application theme</p>
+                                    </div>
+                                    <button aria-checked="false"
+                                        class="group relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-gray-200 dark:bg-primary transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+                                        role="switch" type="button">
+                                        <span class="sr-only">Use setting</span>
+                                        <span aria-hidden="true"
+                                            class="pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out translate-x-0 dark:translate-x-5 group-hover:scale-95">
+                                            <span
+                                                class="absolute inset-0 flex h-full w-full items-center justify-center transition-opacity opacity-100 ease-in duration-200 dark:opacity-0 dark:duration-100">
+                                                <svg class="h-3 w-3 text-gray-400" fill="none" stroke="currentColor"
+                                                    viewBox="0 0 24 24">
+                                                    <path
+                                                        d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+                                                        stroke-linecap="round" stroke-linejoin="round" stroke-width="2">
+                                                    </path>
+                                                </svg>
+                                            </span>
+                                            <span
+                                                class="absolute inset-0 flex h-full w-full items-center justify-center transition-opacity opacity-0 ease-out duration-100 dark:opacity-100 dark:duration-200">
+                                                <svg class="h-3 w-3 text-primary" fill="currentColor"
+                                                    viewBox="0 0 20 20">
+                                                    <path
+                                                        d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z">
+                                                    </path>
+                                                </svg>
+                                            </span>
+                                        </span>
+                                    </button>
+                                </div>
+                                <p
+                                    class="text-xs text-text-muted-light dark:text-text-muted-dark mt-4 pt-4 border-t border-border-light dark:border-border-dark italic">
+                                    This preference overrides the system default.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // --- AUTH CHECK & PROFILE LOAD ---
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (!user || user.role !== "Admin") {
+            window.location.href = "AdminLogin.html";
+        } else {
+            // Fill Sidebar Profile
+            // Note: Ensure you added IDs 'admin-name-sidebar' & 'admin-role-sidebar' to your sidebar HTML like in previous steps
+            const nameEl = document.getElementById("admin-name-sidebar");
+            const roleEl = document.getElementById("admin-role-sidebar");
+            if (nameEl) nameEl.innerText = user.name;
+            if (roleEl) roleEl.innerText = user.role;
+        }
+
+        // --- PASSWORD UPDATE FUNCTION ---
+        async function handlePasswordUpdate(event) {
+            event.preventDefault();
+
+            const currentPassword = document.getElementById("current-password").value;
+            const newPassword = document.getElementById("new-password").value;
+            const confirmPassword = document.getElementById("confirm-password").value;
+
+            // 1. Client-side Validation
+            if (newPassword !== confirmPassword) {
+                alert("New passwords do not match!");
+                return;
+            }
+            if (newPassword.length < 4) {
+                alert("Password is too short (min 4 chars)");
+                return;
+            }
+
+            // 2. Call API
+            try {
+                const response = await fetch("/api/settings/change-password", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        emp_id: user.emp_id, // Get ID from local storage
+                        currentPassword: currentPassword,
+                        newPassword: newPassword
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showToast("Success: " + data.message);
+                    // Clear fields
+                    document.getElementById("current-password").value = "";
+                    document.getElementById("new-password").value = "";
+                    document.getElementById("confirm-password").value = "";
+                } else {
+                    alert("Error: " + data.message);
+                }
+
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Failed to connect to server");
+            }
+        }
+
+        // format date as "MMM DD, YYYY"
+        function formatDate(date) {
+            return date.toLocaleDateString("en-US", {
+                month: "short",
+                day: "2-digit",
+                year: "numeric"
+            });
+        }
+
+        // set current date
+        function setToday() {
+            const today = new Date();
+            document.getElementById("dateText").innerText = formatDate(today);
+        }
+
+        // run on load
+        setToday();
+
+        // optional: refresh at midnight automatically
+        setInterval(setToday, 60000);
+
+        // Sidebar link active state handling
+        const links = document.querySelectorAll(".sidebar-link");
+
+        links.forEach(link => {
+            link.addEventListener("click", () => {
+                links.forEach(l => l.classList.remove("sidebar-active"));
+                link.classList.add("sidebar-active");
+            });
+        });
+
+        // Animate horizontal chart bars
+        document.addEventListener("DOMContentLoaded", () => {
+            const bars = document.querySelectorAll(".chart-bar-h");
+
+            bars.forEach(bar => {
+                bar.style.width = "0%";
+
+                setTimeout(() => {
+                    bar.style.width = bar.getAttribute("data-width");
+                }, 300);
+            });
+        });
+
+         function handleLogout() {
+            // Clear user data from LocalStorage
+            localStorage.removeItem("user");
+            // Redirect to login page
+            window.location.href = "AdminLogin.html";
+        }
+
+
+        // ========== DARK MODE TOGGLE WITH SAVING ==========
+        const toggleBtn = document.querySelector('[role="switch"]');
+        const html = document.documentElement;
+
+        // 1. Initialize the toggle state based on current mode
+        if (html.classList.contains('dark')) {
+            toggleBtn.setAttribute('aria-checked', 'true');
+        } else {
+            toggleBtn.setAttribute('aria-checked', 'false');
+        }
+
+        // 2. Handle Click
+        toggleBtn.addEventListener("click", () => {
+            // Toggle the class on the HTML tag
+            html.classList.toggle("dark");
+
+            // Check if it is now dark
+            const isDark = html.classList.contains("dark");
+
+            // Save preference to Local Storage
+            localStorage.setItem("theme", isDark ? "dark" : "light");
+
+            // Update Accessibility Attribute
+            toggleBtn.setAttribute("aria-checked", isDark);
+        });
+
+        // ========== TOGGLE SWITCH STATES ==========
+        document.querySelectorAll("input[type='checkbox']").forEach(cb => {
+            cb.addEventListener("change", () => {
+                cb.classList.toggle("checked");
+            });
+        });
+
+        // ========== BUTTON CLICK FEEDBACK ==========
+        document.querySelectorAll("button").forEach(btn => {
+            btn.addEventListener("click", () => {
+                btn.classList.add("scale-95");
+                setTimeout(() => btn.classList.remove("scale-95"), 120);
+            });
+        });
+
+        // ========== FORM ACTION FEEDBACK ==========
+        document.querySelectorAll("form").forEach(form => {
+            form.addEventListener("submit", () => {
+                showToast("Changes saved successfully ✔️");
+            });
+        });
+
+        // Function to toggle password visibility
+        function togglePassword(btn) {
+            // Find the input field inside the same parent div
+            const input = btn.previousElementSibling;
+            const icon = btn.querySelector('.material-symbols-outlined');
+
+            if (input.type === "password") {
+                input.type = "text";
+                icon.innerText = "visibility"; // Change icon to open eye
+            } else {
+                input.type = "password";
+                icon.innerText = "visibility_off"; // Change icon to slashed eye
+            }
+        }
+
+        
+        // --- AUTH CHECK & SIDEBAR UPDATE ---
+        if (!user || user.role !== "Admin") {
+            window.location.href = "AdminLogin.html";
+        } else {
+            // UPDATE SIDEBAR PROFILE
+            if (document.getElementById("sidebar-name")) {
+                document.getElementById("sidebar-name").innerText = user.name || "Admin";
+            }
+            if (document.getElementById("sidebar-role")) {
+                document.getElementById("sidebar-role").innerText = user.role || "Administrator";
+            }
+            // Optional: Dynamic Avatar based on name
+            if (document.getElementById("sidebar-avatar") && user.name) {
+                document.getElementById("sidebar-avatar").src =
+                    `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=135bec&color=fff`;
+            }
+        }
+
+
+
+    </script>
+
+</body>
+
+</html>

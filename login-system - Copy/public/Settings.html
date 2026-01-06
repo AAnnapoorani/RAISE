@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<!-- ==========================================
+     USER SETTINGS PAGE
+     ==========================================
+     User account settings and preferences
+     Features: Password change, theme toggle, notification preferences
+========================================== -->
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Settings - AAI Hardware</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <!-- Theme Configuration -->
+    <script src="config.js"></script>
+    <script>
+        tailwind.config = window.TAILWIND_CONFIG;
+    </script>
+
+    <style>
+        /* Smooth hover animation */
+        .animated-btn {
+            transition: all .25s ease;
+            transform-origin: center;
+        }
+
+        .animated-btn:hover {
+            transform: translateY(-2px) scale(1.01);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, .08);
+        }
+
+        .animated-btn:active {
+            transform: scale(.97);
+        }
+
+        /* glowing primary hover */
+        .glow-primary:hover {
+            box-shadow: 0 0 0 6px rgba(19, 91, 236, 0.12);
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        .dark ::-webkit-scrollbar-thumb {
+            background: #475569;
+        }
+
+        /* Sidebar Active State */
+        .sidebar-active {
+            background: linear-gradient(120deg, #135bec, #0e4bce);
+            color: white !important;
+            box-shadow: 0 10px 20px rgba(19, 91, 236, .25);
+        }
+
+        /* Card Hover Effect */
+        .card-hover {
+            transition: all .3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 25px 40px rgba(0, 0, 0, .12);
+        }
+
+        /* Toggle Switch Custom Styling */
+        .toggle-checkbox:checked {
+            right: 0;
+            border-color: #135bec;
+        }
+
+        .toggle-checkbox:checked+.toggle-label {
+            background-color: #135bec;
+        }
+
+        .dark .toast {
+            background: #1e293b;
+            color: #f8fafc;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+        }
+
+        .toast-success {
+            border-color: #10b981;
+        }
+
+        .toast-error {
+            border-color: #ef4444;
+        }
+
+        .toast-info {
+            border-color: #3b82f6;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeOut {
+            to {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark text-text-main-light dark:text-text-main-dark font-display antialiased overflow-hidden h-screen flex">
+    <script src="components/toast.js"></script>
+
+    <aside
+        class="w-64 h-full flex flex-col bg-card-light dark:bg-card-dark border-r border-border-light dark:border-border-dark flex-shrink-0 z-20">
+        <div class="p-6 flex items-center gap-3">
+            <div class="p-2 rounded-lg flex items-center justify-center">
+                <img src="logo.jpeg" class="w-10 h-10 object-cover rounded" alt="icon">
+            </div>
+            <div>
+                <a href="user_dash.html">
+                    <h1 class="text-base font-bold leading-none tracking-tight">AAI Hardware</h1>
+                </a>
+                <p class="text-xs text-text-muted-light dark:text-text-muted-dark mt-1">User Portal</p>
+            </div>
+        </div>
+        <nav class="flex-1 px-4 py-4 flex flex-col gap-2 overflow-y-auto">
+            <a href="user_dash.html"
+                class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-muted-light dark:text-text-muted-dark hover:bg-background-light dark:hover:bg-gray-800 transition-colors">
+                <span class="material-symbols-outlined" style="font-size: 20px;">dashboard</span>
+                <span class="text-sm font-medium">Dashboard</span>
+            </a>
+            <a href="MyRequest.html"
+                class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-muted-light dark:text-text-muted-dark hover:bg-background-light dark:hover:bg-gray-800 transition-colors">
+                <span class="material-symbols-outlined" style="font-size: 20px;">assignment</span>
+                <span class="text-sm font-medium">My Request</span>
+            </a>
+            <a href="TrackRequest.html"
+                class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-muted-light dark:text-text-muted-dark hover:bg-background-light dark:hover:bg-gray-800 transition-colors">
+                <span class="material-symbols-outlined" style="font-size: 20px;">history</span>
+                <span class="text-sm font-medium">Track Request</span>
+            </a>
+            <div class="my-2 border-t border-border-light dark:border-border-dark"></div>
+            <a href="Settings.html" class="sidebar-link sidebar-active flex items-center gap-3 px-3 py-2.5 rounded-lg">
+                <span class="material-symbols-outlined" style="font-size: 20px;">settings</span>
+                <span class="text-sm font-medium">Settings</span>
+            </a>
+        </nav>
+        <a href="profile_dashboard.html"
+            class="animated-btn gap-4 border-t border-border-light dark:border-border-dark block">
+            <div
+                class="flex items-center gap-3 p-4 rounded-lg hover:bg-background-light dark:hover:bg-background-dark cursor-pointer transition-colors">
+                <div id="sidebar-user-avatar"
+                    class="w-10 h-10 rounded-full bg-cover bg-center border border-gray-200 dark:border-gray-700"
+                    style="background-image: url('https://ui-avatars.com/api/?name=User&background=random');">
+                </div>
+                <div class="flex flex-col flex-1 min-w-0">
+                    <p id="sidebar-user-name"
+                        class="text-sm font-bold text-text-main-light dark:text-text-main-dark truncate">
+                        Loading...</p>
+                    <p id="sidebar-user-email" class="text-xs text-text-muted-light dark:text-text-muted-dark truncate">
+                        user@company.com</p>
+                </div>
+            </div>
+        </a>
+    </aside>
+
+    <main class="flex-1 flex flex-col relative z-0 h-full overflow-hidden">
+
+        <header
+            class="h-16 flex-none border-b border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark flex items-center justify-between px-6 z-20">
+            <div class="flex items-center gap-2 text-text-muted-light dark:text-text-muted-dark text-sm">
+                <a href="user_dash.html"
+                    class="material-symbols-outlined text-[24px] hover:text-primary transition-colors">home</a>
+                <span>/</span>
+                <a href="Settings.html" class="text-text-main-light dark:text-text-main-dark font-medium">Settings</a>
+            </div>
+            <div class="flex items-center gap-4">
+                <button onclick="handleLogout()"
+                    class="animated-btn flex items-center gap-2 px-3 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white text-sm font-medium transition-all">
+                    <span class="material-symbols-outlined text-[18px]">logout</span>
+                    Logout
+                </button>
+            </div>
+        </header>
+
+        <div class="flex-1 overflow-y-auto p-6 md:p-8 bg-background-light dark:bg-background-dark">
+            <div class="max-w-4xl mx-auto space-y-8">
+
+                <div class="mb-4">
+                    <h1 class="text-3xl font-bold text-text-main-light dark:text-text-main-dark">Settings</h1>
+                    <p class="text-text-muted-light dark:text-text-muted-dark mt-1">Manage your application preferences
+                        and security.</p>
+                </div>
+
+                <section
+                    class="card-hover bg-card-light dark:bg-card-dark rounded-xl shadow-sm border border-border-light dark:border-border-dark overflow-hidden">
+                    <div class="p-6 border-b border-border-light dark:border-border-dark">
+                        <h2
+                            class="text-lg font-bold text-text-main-light dark:text-text-main-dark flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary">palette</span> Appearance
+                        </h2>
+                        <p class="text-sm text-text-muted-light dark:text-text-muted-dark mt-1">Customize how the
+                            dashboard looks on your device.</p>
+                    </div>
+                    <div class="p-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div onclick="setTheme('light')" id="theme-light-btn"
+                                class="cursor-pointer border-2 rounded-xl p-4 flex items-center gap-4 hover:bg-background-light dark:hover:bg-gray-800 transition-all">
+                                <div
+                                    class="w-12 h-12 rounded-full bg-orange-100 text-orange-500 flex items-center justify-center">
+                                    <span class="material-symbols-outlined">light_mode</span>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="font-bold text-text-main-light dark:text-text-main-dark">Light Mode</h3>
+                                    <p class="text-xs text-text-muted-light dark:text-text-muted-dark">Standard light
+                                        theme</p>
+                                </div>
+                                <div
+                                    class="w-6 h-6 rounded-full border-2 border-border-light dark:border-border-dark flex items-center justify-center check-circle">
+                                    <div class="w-3 h-3 rounded-full bg-primary hidden"></div>
+                                </div>
+                            </div>
+
+                            <div onclick="setTheme('dark')" id="theme-dark-btn"
+                                class="cursor-pointer border-2 rounded-xl p-4 flex items-center gap-4 hover:bg-background-light dark:hover:bg-gray-800 transition-all">
+                                <div
+                                    class="w-12 h-12 rounded-full bg-indigo-100 dark:bg-indigo-900/30 text-indigo-500 flex items-center justify-center">
+                                    <span class="material-symbols-outlined">dark_mode</span>
+                                </div>
+                                <div class="flex-1">
+                                    <h3 class="font-bold text-text-main-light dark:text-text-main-dark">Dark Mode</h3>
+                                    <p class="text-xs text-text-muted-light dark:text-text-muted-dark">Easy on the eyes
+                                    </p>
+                                </div>
+                                <div
+                                    class="w-6 h-6 rounded-full border-2 border-border-light dark:border-border-dark flex items-center justify-center check-circle">
+                                    <div class="w-3 h-3 rounded-full bg-primary hidden"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+
+                <section
+                    class="card-hover bg-card-light dark:bg-card-dark rounded-xl shadow-sm border border-border-light dark:border-border-dark overflow-hidden">
+                    <div class="p-6 border-b border-border-light dark:border-border-dark">
+                        <h2
+                            class="text-lg font-bold text-text-main-light dark:text-text-main-dark flex items-center gap-2">
+                            <span class="material-symbols-outlined text-primary">lock</span> Security
+                        </h2>
+                        <p class="text-sm text-text-muted-light dark:text-text-muted-dark mt-1">Update your password and
+                            security settings.</p>
+                    </div>
+                    <div class="p-6">
+                        <form id="security-form" class="space-y-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="flex flex-col gap-1.5">
+                                    <label
+                                        class="text-text-muted-light dark:text-text-muted-dark text-xs font-bold uppercase">Current
+                                        Password</label>
+                                    <input type="password" placeholder="••••••••"
+                                        class="w-full p-3 rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark text-text-main-light dark:text-text-main-dark focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all">
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="flex flex-col gap-1.5">
+                                    <label
+                                        class="text-text-muted-light dark:text-text-muted-dark text-xs font-bold uppercase">New
+                                        Password</label>
+                                    <input type="password" placeholder="••••••••"
+                                        class="w-full p-3 rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark text-text-main-light dark:text-text-main-dark focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all">
+                                </div>
+                                <div class="flex flex-col gap-1.5">
+                                    <label
+                                        class="text-text-muted-light dark:text-text-muted-dark text-xs font-bold uppercase">Confirm
+                                        New Password</label>
+                                    <input type="password" placeholder="••••••••"
+                                        class="w-full p-3 rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark text-text-main-light dark:text-text-main-dark focus:ring-2 focus:ring-primary focus:border-primary outline-none transition-all">
+                                </div>
+                            </div>
+                            <div class="pt-2 flex justify-end">
+                                <button
+                                    class="animated-btn glow-primary px-6 py-2.5 bg-primary hover:bg-primary-hover text-white rounded-lg text-sm font-bold shadow-lg shadow-primary/30 transition-all">
+                                    Update Password
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+
+            </div>
+        </div>
+    </main>
+
+    <script src="components/toast.js"></script>
+
+    <script>
+        /**
+         * Settings Page Functional Logic
+         */
+
+        // --- 1. GLOBAL AUTH & SETUP ---
+        const user = JSON.parse(localStorage.getItem("user"));
+
+        document.addEventListener('DOMContentLoaded', () => {
+            checkAuth();
+            loadUserProfile();
+
+            // UI Initialization
+            initToastSystem();
+            initPasswordSecurity();
+
+            // Theme Init
+            const currentTheme = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+            setTheme(currentTheme);
+        });
+
+        function checkAuth() {
+            if (!user) {
+                window.location.href = "login.html";
+            }
+        }
+
+        function loadUserProfile() {
+            if (!user) return;
+
+            // Update Sidebar Info
+            const nameEl = document.getElementById("sidebar-user-name");
+            const emailEl = document.getElementById("sidebar-user-email");
+            const avatarEl = document.getElementById("sidebar-user-avatar");
+
+            if (nameEl) nameEl.innerText = user.name || "User";
+            const department = user.department || user.dept;
+            if (emailEl) emailEl.innerText = department || user.email || "Employee"; // Display Dept or fallback
+
+            if (avatarEl && user.name) {
+                avatarEl.style.backgroundImage = `url('https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=135bec&color=fff')`;
+            }
+        }
+
+        // --- 2. PASSWORD SECURITY LOGIC ---
+        function initPasswordSecurity() {
+            const form = document.getElementById('security-form');
+            if (!form) return;
+
+            form.addEventListener('submit', async (e) => {
+                e.preventDefault();
+
+                const inputs = form.querySelectorAll('input[type="password"]');
+                const currentPass = inputs[0].value;
+                const newPass = inputs[1].value;
+                const confirmPass = inputs[2].value;
+                const submitBtn = form.querySelector('button');
+
+                // Client-side Validation
+                if (!currentPass || !newPass || !confirmPass) {
+                    showToast('All password fields are required', 'error');
+                    return;
+                }
+                if (newPass.length < 4) {
+                    showToast('New password is too short', 'error');
+                    return;
+                }
+                if (newPass !== confirmPass) {
+                    showToast('New passwords do not match', 'error');
+                    return;
+                }
+                if (currentPass === newPass) {
+                    showToast('New password cannot be the same as current', 'error');
+                    return;
+                }
+
+                // API Call
+                const originalBtnText = submitBtn.innerText;
+                submitBtn.innerHTML = '<span class="material-symbols-outlined animate-spin text-sm">sync</span> Updating...';
+                submitBtn.disabled = true;
+                submitBtn.classList.add('opacity-75');
+
+                try {
+                    const response = await fetch("/api/settings/change-password", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            emp_id: user.emp_id,
+                            currentPassword: currentPass,
+                            newPassword: newPass
+                        })
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok) {
+                        showToast(result.message, 'success');
+                        form.reset();
+                    } else {
+                        showToast(result.message, 'error');
+                    }
+
+                } catch (error) {
+                    console.error("Password Update Error:", error);
+                    showToast("Failed to connect to server", 'error');
+                } finally {
+                    // Reset Button
+                    submitBtn.innerText = originalBtnText;
+                    submitBtn.disabled = false;
+                    submitBtn.classList.remove('opacity-75');
+                }
+            });
+        }
+
+       // --- 5. SYSTEM UTILITIES ---
+
+        // Sidebar Navigation Active State
+        const links = document.querySelectorAll(".sidebar-link");
+        links.forEach(link => {
+            link.addEventListener("click", () => {
+                links.forEach(l => l.classList.remove("sidebar-active"));
+                link.classList.remove("text-text-muted-light", "dark:text-text-muted-dark");
+                link.classList.add("sidebar-active");
+            });
+        });
+
+        // Logout
+        function handleLogout() {
+            const confirmLogout = confirm("Are you sure you want to log out?");
+            if (confirmLogout) {
+                localStorage.removeItem("user");
+                window.location.href = "UserLogin.html";
+            }
+        }
+
+        // Theme Switcher
+        function setTheme(theme) {
+            const lightBtn = document.getElementById('theme-light-btn');
+            const darkBtn = document.getElementById('theme-dark-btn');
+
+            // Reset UI
+            if (lightBtn) {
+                lightBtn.classList.remove('border-primary', 'bg-blue-50', 'dark:bg-blue-900/10');
+                lightBtn.classList.add('border-transparent');
+                lightBtn.querySelector('.check-circle div').classList.add('hidden');
+                lightBtn.querySelector('.check-circle').classList.remove('border-primary');
+            }
+            if (darkBtn) {
+                darkBtn.classList.remove('border-primary', 'bg-blue-50', 'dark:bg-blue-900/10');
+                darkBtn.classList.add('border-transparent');
+                darkBtn.querySelector('.check-circle div').classList.add('hidden');
+                darkBtn.querySelector('.check-circle').classList.remove('border-primary');
+            }
+
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+                if (darkBtn) {
+                    darkBtn.classList.remove('border-transparent');
+                    darkBtn.classList.add('border-primary', 'bg-blue-50', 'dark:bg-blue-900/10');
+                    darkBtn.querySelector('.check-circle div').classList.remove('hidden');
+                    darkBtn.querySelector('.check-circle').classList.add('border-primary');
+                }
+            } else {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+                if (lightBtn) {
+                    lightBtn.classList.remove('border-transparent');
+                    lightBtn.classList.add('border-primary', 'bg-blue-50', 'dark:bg-blue-900/10');
+                    lightBtn.querySelector('.check-circle div').classList.remove('hidden');
+                    lightBtn.querySelector('.check-circle').classList.add('border-primary');
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>

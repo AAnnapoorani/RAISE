@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<!-- ==========================================
+     MY REQUESTS PAGE
+     ==========================================
+     User's personal request history and management
+     Features: View all requests, filter by status, request details
+========================================== -->
+
+<head>
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+  <title>My Requests - AAI Hardware</title>
+  <link href="https://fonts.googleapis.com" rel="preconnect" />
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+    rel="stylesheet" />
+
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+  <!-- Theme Configuration -->
+  <script src="config.js"></script>
+  <script>
+    tailwind.config = window.TAILWIND_CONFIG;
+  </script>
+
+  <style>
+    .animated-btn {
+      transition: all .25s ease;
+      transform-origin: center;
+    }
+
+    .animated-btn:hover {
+      transform: translateY(-2px) scale(1.01);
+      box-shadow: 0 12px 25px rgba(0, 0, 0, .08);
+    }
+
+    .animated-btn:active {
+      transform: scale(.97);
+    }
+
+    .glow-primary:hover {
+      box-shadow: 0 0 0 6px rgba(19, 91, 236, 0.12);
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #cbd5e1;
+      border-radius: 3px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94a3b8;
+    }
+
+    .dark ::-webkit-scrollbar-thumb {
+      background: #475569;
+    }
+
+    .sidebar-active {
+      background: linear-gradient(120deg, #135bec, #0e4bce);
+      color: white !important;
+      box-shadow: 0 10px 20px rgba(19, 91, 236, .25);
+    }
+
+    .card-hover {
+      transition: all .3s ease;
+    }
+
+    .card-hover:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 25px 40px rgba(0, 0, 0, .12);
+    }
+
+    /* Loader Animation */
+    .loader {
+      border: 3px solid rgba(19, 91, 236, 0.1);
+      border-left-color: #135bec;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+  </style>
+</head>
+
+<body
+  class="bg-background-light dark:bg-background-dark text-text-main-light dark:text-text-main-dark font-display antialiased overflow-hidden">
+  <script src="components/toast.js"></script>
+  <div class="flex h-screen w-full">
+
+    <aside
+      class="w-64 h-full flex flex-col bg-card-light dark:bg-card-dark border-r border-border-light dark:border-border-dark flex-shrink-0 z-20">
+      <div class="p-6 flex items-center gap-3">
+        <div class="p-2 rounded-lg flex items-center justify-center">
+          <img src="logo.jpeg" class="w-10 h-10 object-cover rounded" alt="icon">
+        </div>
+        <div>
+          <a href="user_dash.html">
+            <h1 class="text-base font-bold leading-none tracking-tight">AAI Hardware</h1>
+          </a>
+          <p class="text-xs text-text-muted-light dark:text-text-muted-dark mt-1">User Portal</p>
+        </div>
+      </div>
+      <nav class="flex-1 px-4 py-4 flex flex-col gap-2 overflow-y-auto">
+        <a href="user_dash.html"
+          class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-muted-light dark:text-text-muted-dark hover:bg-background-light dark:hover:bg-gray-800 transition-colors">
+          <span class="material-symbols-outlined" style="font-size: 20px;">dashboard</span>
+          <span class="text-sm font-medium">Dashboard</span>
+        </a>
+        <a href="MyRequest.html" class="sidebar-link sidebar-active flex items-center gap-3 px-3 py-2.5 rounded-lg">
+          <span class="material-symbols-outlined" style="font-size: 20px;">assignment</span>
+          <span class="text-sm font-medium">My Request</span>
+        </a>
+        <a href="TrackRequest.html"
+          class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-muted-light dark:text-text-muted-dark hover:bg-background-light dark:hover:bg-gray-800 transition-colors">
+          <span class="material-symbols-outlined" style="font-size: 20px;">history</span>
+          <span class="text-sm font-medium">Track Request</span>
+        </a>
+        <div class="my-2 border-t border-border-light dark:border-border-dark"></div>
+        <a href="Settings.html"
+          class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-muted-light dark:text-text-muted-dark hover:bg-background-light dark:hover:bg-gray-800 transition-colors">
+          <span class="material-symbols-outlined" style="font-size: 20px;">settings</span>
+          <span class="text-sm font-medium">Settings</span>
+        </a>
+      </nav>
+      <a href="profile_dashboard.html"
+        class="animated-btn gap-4 border-t border-border-light dark:border-border-dark block">
+        <div
+          class="flex items-center gap-3 p-4 rounded-lg hover:bg-background-light dark:hover:bg-background-dark cursor-pointer transition-colors">
+          <div id="sidebar-avatar"
+            class="w-10 h-10 rounded-full bg-cover bg-center border border-gray-200 dark:border-gray-700"
+            style="background-image: url('https://ui-avatars.com/api/?name=User&background=random');">
+          </div>
+          <div class="flex flex-col flex-1 min-w-0">
+            <p id="sidebar-name" class="text-sm font-bold text-text-main-light dark:text-text-main-dark truncate">
+              Loading...</p>
+            <p id="sidebar-id" class="text-xs text-text-muted-light dark:text-text-muted-dark truncate">
+              ...</p>
+          </div>
+        </div>
+      </a>
+    </aside>
+
+    <main class="flex-1 flex flex-col relative z-0 h-full overflow-hidden">
+
+      <header
+        class="h-16 flex-none border-b border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark flex items-center justify-between px-6 z-20">
+        <div class="flex items-center gap-2 text-text-muted-light dark:text-text-muted-dark text-sm">
+          <a href="user_dash.html"
+            class="material-symbols-outlined text-[24px] hover:text-primary transition-colors">home</a>
+          <span>/</span>
+          <a href="MyRequest.html" class="text-text-main-light dark:text-text-main-dark font-medium">My
+            Requests</a>
+        </div>
+        <div class="flex items-center gap-4">
+          <button onclick="handleLogout()"
+            class="animated-btn flex items-center gap-2 px-3 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white text-sm font-medium transition-all">
+            <span class="material-symbols-outlined text-[18px]">logout</span>
+            Logout
+          </button>
+        </div>
+      </header>
+
+      <div class="flex-1 overflow-y-auto p-6 md:p-8 bg-background-light dark:bg-background-dark">
+        <div class="max-w-7xl mx-auto space-y-6">
+
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h1 class="text-2xl font-bold text-text-main-light dark:text-text-main-dark tracking-tight">
+                My Requests</h1>
+              <p class="text-text-muted-light dark:text-text-muted-dark text-sm mt-1">
+                Track and manage your maintenance tickets and orders.
+              </p>
+            </div>
+            <a href="user_request.html">
+              <button
+                class="animated-btn glow-primary flex items-center justify-center gap-2 bg-primary hover:bg-primary-hover text-white px-5 py-2.5 rounded-lg shadow-lg shadow-primary/25 transition-all font-bold text-sm">
+                <span class="material-symbols-outlined text-[20px]">add</span>
+                New Request
+              </button>
+            </a>
+          </div>
+
+          <div
+            class="bg-card-light dark:bg-card-dark p-4 rounded-xl border border-border-light dark:border-border-dark shadow-sm">
+            <div class="flex flex-col md:flex-row gap-3">
+              <div class="flex-1 relative">
+                <span
+                  class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-text-muted-light dark:text-text-muted-dark">search</span>
+                <input id="search-input" onkeyup="filterRequests()"
+                  class="w-full pl-10 pr-4 py-2.5 rounded-lg border border-border-light dark:border-border-dark bg-background-light dark:bg-background-dark text-text-main-light dark:text-text-main-dark focus:ring-2 focus:ring-primary focus:border-primary text-sm transition-all placeholder:text-text-muted-light dark:placeholder:text-text-muted-dark"
+                  placeholder="Search by Asset Name or ID..." type="text" />
+              </div>
+              <div class="flex gap-3 overflow-x-auto pb-1 md:pb-0">
+                <select id="status-filter" onchange="filterRequests()"
+                  class="pl-3 pr-10 py-2.5 rounded-lg border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark text-text-main-light dark:text-text-main-dark text-sm focus:ring-2 focus:ring-primary focus:border-primary cursor-pointer min-w-[140px]">
+                  <option value="All">All Status</option>
+                  <option value="Pending">Pending</option>
+                  <option value="Approved">Approved</option>
+                  <option value="Completed">Completed</option>
+                  <option value="Rejected">Rejected</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="bg-card-light dark:bg-card-dark rounded-xl border border-border-light dark:border-border-dark shadow-sm overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr
+                    class="bg-background-light dark:bg-background-dark border-b border-border-light dark:border-border-dark">
+                    <th
+                      class="py-4 px-6 text-xs font-bold uppercase tracking-wider text-text-main-light dark:text-text-main-dark">
+                      Request ID
+                    </th>
+                    <th
+                      class="py-4 px-6 text-xs font-bold uppercase tracking-wider text-text-main-light dark:text-text-main-dark">
+                      Asset / Type
+                    </th>
+                    <th
+                      class="py-4 px-6 text-xs font-bold uppercase tracking-wider text-text-main-light dark:text-text-main-dark">
+                      Department
+                    </th>
+                    <th
+                      class="py-4 px-6 text-xs font-bold uppercase tracking-wider text-text-main-light dark:text-text-main-dark">
+                      Priority
+                    </th>
+                    <th
+                      class="py-4 px-6 text-xs font-bold uppercase tracking-wider text-text-main-light dark:text-text-main-dark">
+                      Date
+                    </th>
+                    <th
+                      class="py-4 px-6 text-xs font-bold uppercase tracking-wider text-text-main-light dark:text-text-main-dark">
+                      Status
+                    </th>
+                  </tr>
+                </thead>
+                <tbody id="table-body" class="divide-y divide-border-light dark:divide-border-dark">
+                  <tr>
+                    <td colspan="6" class="py-8 text-center">
+                      <div class="flex justify-center items-center gap-2">
+                        <div class="loader"></div>
+                        <span class="text-sm text-text-muted-light dark:text-text-muted-dark">Loading requests...</span>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div
+              class="px-6 py-4 border-t border-border-light dark:border-border-dark flex items-center justify-between">
+              <div class="text-sm text-text-muted-light dark:text-text-muted-dark">
+                Total Requests: <span id="total-count"
+                  class="font-bold text-text-main-light dark:text-text-main-dark">0</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <button onclick="changePage(-1)" id="prev-btn"
+                  class="p-2 rounded-lg border border-border-light dark:border-border-dark text-text-muted-light dark:text-text-muted-dark hover:bg-background-light dark:hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed">
+                  <span class="material-symbols-outlined text-[18px]">chevron_left</span>
+                </button>
+                <span id="page-indicator" class="text-sm font-medium px-2">Page 1</span>
+                <button onclick="changePage(1)" id="next-btn"
+                  class="p-2 rounded-lg border border-border-light dark:border-border-dark text-text-muted-light dark:text-text-muted-dark hover:bg-background-light dark:hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed">
+                  <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+                </button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="mt-8 text-center text-xs text-text-muted-light dark:text-text-muted-dark pb-4">
+          © 2024 PrintGuard Management System. All rights reserved.
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // --- API & STATE ---
+    const API_URL = "/api/tickets/user"; // GET /api/tickets/user/:emp_id
+    let allRequests = [];
+    let currentPage = 1;
+    const itemsPerPage = 5;
+
+    // --- 1. SETUP & AUTH ---
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!user) {
+        window.location.href = "login.html";
+        return;
+      }
+      // Populate Sidebar
+      document.getElementById("sidebar-name").innerText = user.name || "User";
+      document.getElementById("sidebar-id").innerText = user.emp_id || "ID";
+      if (user.name) {
+        const avatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=135bec&color=fff`;
+        document.getElementById("sidebar-avatar").style.backgroundImage = `url('${avatar}')`;
+      }
+
+      // Fetch Data
+      fetchRequests();
+    });
+
+    // --- 2. FETCH DATA ---
+    async function fetchRequests() {
+      try {
+        // Fetch requests for specific user
+        const response = await fetch(`${API_URL}/${user.emp_id}`);
+
+        if (!response.ok) throw new Error("Failed to fetch");
+
+        allRequests = await response.json();
+
+        // Initial Render
+        renderTable();
+      } catch (error) {
+        console.error("Error:", error);
+        document.getElementById("table-body").innerHTML = `
+                    <tr>
+                        <td colspan="6" class="py-8 text-center text-red-500">
+                            Failed to load data. Please try refreshing.
+                        </td>
+                    </tr>`;
+      }
+    }
+
+    // --- 3. RENDER TABLE WITH FILTERS & PAGINATION ---
+    function renderTable() {
+      const tbody = document.getElementById("table-body");
+      const searchVal = document.getElementById("search-input").value.toLowerCase();
+      const statusVal = document.getElementById("status-filter").value;
+
+      // Filter Logic (Search & Status)
+      let filteredData = allRequests.filter(req => {
+        const matchesSearch = (req.asset_id && req.asset_id.toLowerCase().includes(searchVal)) ||
+          (req.request_id && req.request_id.toLowerCase().includes(searchVal));
+        const matchesStatus = statusVal === "All" || req.status === statusVal;
+        return matchesSearch && matchesStatus;
+      });
+
+      // Pagination Logic
+      const totalItems = filteredData.length;
+      const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
+
+      // Adjust page if out of bounds
+      if (currentPage > totalPages) currentPage = totalPages;
+      if (currentPage < 1) currentPage = 1;
+
+      const startIndex = (currentPage - 1) * itemsPerPage;
+      const paginatedData = filteredData.slice(startIndex, startIndex + itemsPerPage);
+
+      // Update Counts & Buttons
+      document.getElementById("total-count").innerText = totalItems;
+      document.getElementById("page-indicator").innerText = `Page ${currentPage} of ${totalPages}`;
+      document.getElementById("prev-btn").disabled = currentPage === 1;
+      document.getElementById("next-btn").disabled = currentPage === totalPages;
+
+      // HTML Generation
+      if (paginatedData.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-text-muted-light dark:text-text-muted-dark">No records found.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = paginatedData.map(req => {
+        // Status Styling
+        let statusClass = "bg-gray-100 text-gray-800";
+        if (req.status === "Pending") statusClass = "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-500";
+        if (req.status === "Approved") statusClass = "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-500";
+        if (req.status === "Completed") statusClass = "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-500";
+        if (req.status === "Rejected") statusClass = "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-500";
+
+        // Priority Styling
+        let priorityClass = "";
+        if (req.priority === "High") priorityClass = "text-red-500 font-bold";
+        if (req.priority === "Medium") priorityClass = "text-orange-500 font-medium";
+        if (req.priority === "Low") priorityClass = "text-green-500";
+
+        const date = new Date(req.order_date).toLocaleDateString();
+
+        const assetLabel = req.asset_name ? `${req.asset_name} (${req.asset_id || "ID"})` : (req.asset_id || "Hardware");
+        const departmentLabel = req.department || "General";
+
+        const isUserEditable = req.status === "Pending" || req.status === "Completed";
+
+        return `
+                <tr class="group hover:bg-background-light/50 dark:hover:bg-gray-800/50 transition-colors">
+                    <td class="py-4 px-6">
+                        <span class="font-medium text-text-main-light dark:text-text-main-dark">#${req.request_id}</span>
+                    </td>
+                    <td class="py-4 px-6">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-lg bg-primary/10 text-primary flex items-center justify-center flex-none">
+                                <span class="material-symbols-outlined text-[18px]">devices</span>
+                            </div>
+                            <span class="text-sm font-medium text-text-main-light dark:text-text-main-dark">${assetLabel}</span>
+                        </div>
+                    </td>
+                    <td class="py-4 px-6 text-text-muted-light dark:text-text-muted-dark text-sm">
+                      ${departmentLabel}
+                    </td>
+                    <td class="py-4 px-6 text-sm ${priorityClass}">
+                        ${req.priority || "Normal"}
+                    </td>
+                    <td class="py-4 px-6 text-text-muted-light dark:text-text-muted-dark text-sm">
+                        ${date}
+                    </td>
+                    <td class="py-4 px-6">
+                      ${isUserEditable && req.status !== 'Approved' && req.status !== 'Rejected' ? `
+                        <select onchange="updateUserStatus('${req.request_id}', this.value)" ${req.status === 'Completed' ? 'disabled' : ''}
+                          class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold border-0 ${statusClass} ${req.status === 'Completed' ? 'cursor-not-allowed opacity-70' : 'cursor-pointer'}">
+                          <option value="Pending" ${req.status === 'Pending' ? 'selected' : ''}>Pending</option>
+                          <option value="Completed" ${req.status === 'Completed' ? 'selected' : ''}>Completed</option>
+                        </select>
+                      ` : `
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-semibold ${statusClass}">${req.status}</span>
+                      `}
+                    </td>
+                </tr>
+                `;
+      }).join('');
+    }
+
+    // --- 4. ACTIONS (Called by UI events) ---
+    function filterRequests() {
+      currentPage = 1; // Reset to page 1 on filter
+      renderTable();
+    }
+
+    function changePage(direction) {
+      currentPage += direction;
+      renderTable();
+    }
+
+    async function updateUserStatus(requestId, newStatus) {
+      try {
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (!user || !user.emp_id) {
+          showToast("User not authenticated", "error");
+          return;
+        }
+
+        const response = await fetch(`/api/tickets/${requestId}/user-status`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            emp_id: user.emp_id,
+            status: newStatus
+          })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          showToast("Status updated successfully", "success");
+          fetchRequests(); // Refresh the table
+        } else {
+          showToast(data.message || "Failed to update status", "error");
+        }
+      } catch (error) {
+        console.error("Status update error:", error);
+        showToast("Error updating status: " + error.message, "error");
+      }
+    }
+
+    function handleLogout() {
+      if (confirm("Are you sure you want to log out?")) {
+        localStorage.removeItem("user");
+        window.location.href = "login.html";
+      }
+    }
+
+    // Sidebar Active State
+    const links = document.querySelectorAll(".sidebar-link");
+    links.forEach(link => {
+      link.addEventListener("click", () => {
+        links.forEach(l => l.classList.remove("sidebar-active"));
+        link.classList.add("sidebar-active");
+      });
+    });
+  </script>
+
+</body>
+
+</html>

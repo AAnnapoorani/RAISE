@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<!-- ==========================================
+     ADMIN PROFILE PAGE
+     ==========================================
+     Admin user profile viewing and editing
+     Features: View profile details, edit information, role display
+========================================== -->
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>AAI Hardware - Admin Profile</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <script src="config.js"></script>
+    <script>
+        tailwind.config = window.TAILWIND_CONFIG;
+    </script>
+    
+    <style>
+        .animated-btn {
+            transition: all .25s ease;
+            transform-origin: center;
+        }
+
+        .animated-btn:hover {
+            transform: translateY(-2px) scale(1.01);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, .08);
+        }
+
+        .animated-btn:active {
+            transform: scale(.97);
+        }
+
+        .sidebar-active {
+            background: linear-gradient(120deg, #135bec, #0e4bce);
+            color: white !important;
+            box-shadow: 0 10px 20px rgba(19, 91, 236, .25);
+        }
+
+        .card-hover {
+            transition: all .3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 25px 40px rgba(0, 0, 0, .12);
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark text-text-main-light dark:text-text-main-dark font-display antialiased overflow-hidden">
+    
+    <!-- SECTION: Layout shell (sidebar + profile content) -->
+    <div class="flex h-screen w-full">
+
+        <!-- SECTION: Sidebar navigation  -->
+        <aside
+            class="w-64 h-full flex flex-col bg-card-light dark:bg-card-dark border-r border-border-light dark:border-border-dark flex-shrink-0 z-20">
+            <div class="p-6 flex items-center gap-3">
+                <div class="p-2 rounded-lg flex items-center justify-center">
+                    <img src="logo.jpeg" class="w-10 h-10 object-cover rounded" alt="icon">
+                </div>
+                <div>
+                    <a href="Ad-dash.html">
+                        <h1 class="text-base font-bold leading-none tracking-tight">AAI Hardware</h1>
+                    </a>
+                    <p class="text-xs text-text-muted-light dark:text-text-muted-dark mt-1">Admin Portal</p>
+                </div>
+            </div>
+            <nav class="flex-1 px-4 py-4 flex flex-col gap-2 overflow-y-auto">
+                <a href="Ad-dash.html" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">dashboard</span>
+                    <span class="text-sm font-medium">Dashboard</span>
+                </a>
+                <a href="Ad-ticket.html" class="sidebar-link  flex items-center gap-3 px-3 py-2.5 rounded-lg">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">confirmation_number</span>
+                    <span class="text-sm font-medium">Ticket Management</span>
+                </a>
+                <a href="Ad-inventory.html" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">inventory_2</span>
+                    <span class="text-sm font-medium">Inventory</span>
+                </a>
+                <div class="my-2 border-t border-border-light dark:border-border-dark"></div>
+                <a href="Ad-settings.html" class="sidebar-link  flex items-center gap-3 px-3 py-2.5 rounded-lg">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">settings</span>
+                    <span class="text-sm font-medium">Settings</span>
+                </a>
+            </nav>
+            <a href="Ad-profile_dashboard.html"
+                class="animated-btn gap-4 border-t border-border-light dark:border-border-dark block">
+                <div
+                    class="flex items-center gap-3 p-2 rounded-lg hover:bg-background-light dark:hover:bg-background-dark cursor-pointer transition-colors">
+                    <div class="relative w-10 h-10 rounded-full overflow-hidden bg-gray-200">
+                        <img id="sidebar-avatar" class="object-cover w-full h-full"
+                            src="https://via.placeholder.com/150" alt="Profile" />
+                    </div>
+                    <div class="flex flex-col overflow-hidden">
+                        <p id="sidebar-name" class="text-sm font-bold truncate">Loading...</p>
+                        <p id="sidebar-role" class="text-xs text-text-muted-light dark:text-text-muted-dark truncate">
+                            ...</p>
+                    </div>
+                </div>
+            </a>
+        </aside>
+
+        <!-- Profile main content -->
+        <main class="flex-1 flex flex-col h-full overflow-hidden relative">
+            <header
+                class="h-16 flex items-center justify-between px-6 bg-card-light dark:bg-card-dark border-b border-border-light dark:border-border-dark flex-shrink-0">
+                <div class="flex items-center w-full max-w-md"></div>
+                <div class="flex items-center gap-4">
+                    <button
+                        class="animated-btn flex items-center gap-2 px-3 py-2 rounded-lg bg-background-light dark:bg-background-dark text-text-main-light dark:text-text-main-dark hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-sm font-medium">
+                        <span class="material-symbols-outlined text-[18px]">calendar_today</span>
+                        <span id="dateText">Dec 29, 2025</span>
+                    </button>
+                    <button onclick="handleLogout()"
+                        class="animated-btn flex items-center gap-2 px-3 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white text-sm font-medium transition-all">
+                        <span class="material-symbols-outlined text-[18px]">logout</span>
+                        Logout
+                    </button>
+                </div>
+            </header>
+
+            <div class="flex-1 overflow-y-auto bg-background-light dark:bg-background-dark p-6 lg:p-10">
+                <div class="max-w-4xl mx-auto flex flex-col gap-8">
+
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div class="flex items-center gap-4">
+                            <div class="relative w-24 h-24 rounded-full overflow-hidden border-4 border-primary">
+                                <img id="main-avatar-img" src="https://via.placeholder.com/150" alt="User Avatar"
+                                    class="object-cover w-full h-full">
+                            </div>
+                            <div>
+                                <h2 id="display-name"
+                                    class="text-3xl font-bold text-text-main-light dark:text-text-main-dark">Loading...
+                                </h2>
+                                <p id="display-role" class="text-text-muted-light dark:text-text-muted-dark mt-1">...
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                        <div
+                            class="card-hover bg-card-light dark:bg-card-dark rounded-xl p-6 border border-border-light dark:border-border-dark shadow-sm">
+                            <h3 class="text-lg font-bold text-text-main-light dark:text-text-main-dark mb-4">Personal
+                                Information</h3>
+                            <ul class="text-text-muted-light dark:text-text-muted-dark space-y-2">
+                                <li><strong>Email:</strong> <span id="display-email">...</span></li>
+                                <li><strong>Phone:</strong> <span class="italic text-gray-400">Not Available</span></li>
+                                <li><strong>Joined:</strong> <span class="italic text-gray-400">Not Available</span>
+                                </li>
+                                <li><strong>Department:</strong> <span id="display-dept">...</span></li>
+                            </ul>
+                        </div>
+
+                        <div
+                            class="card-hover bg-card-light dark:bg-card-dark rounded-xl p-6 border border-border-light dark:border-border-dark shadow-sm">
+                            <h3 class="text-lg font-bold text-text-main-light dark:text-text-main-dark mb-4">Security &
+                                Settings</h3>
+                            <ul class="text-text-muted-light dark:text-text-muted-dark space-y-2">
+                                <li><strong>Password:</strong> ******** <button
+                                        onclick="window.location.href='Ad-settings.html'"
+                                        class="text-primary hover:text-primary-hover ml-2 text-sm">Change</button></li>
+                                <li><strong>Two-Factor Authentication:</strong> Enabled <button
+                                        class="text-primary hover:text-primary-hover ml-2 text-sm">Manage</button></li>
+                                <li><strong>Activity Logs:</strong> Last login 2 days ago <button
+                                        class="text-primary hover:text-primary-hover ml-2 text-sm">View</button></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script>
+        // --- 1. SETUP DATE ---
+        function formatDate(date) {
+            return date.toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" });
+        }
+        document.getElementById("dateText").innerText = formatDate(new Date());
+
+        // --- 2. AUTH CHECK & LOAD PROFILE ---
+        async function loadProfile() {
+            const user = JSON.parse(localStorage.getItem("user"));
+            if (!user || user.role !== "Admin") {
+                window.location.href = "AdminLogin.html";
+                return;
+            }
+
+            // Fill Sidebar immediately from local storage (faster perceived load)
+            updateUI(user);
+
+            // Fetch fresh data from DB to get any updates
+            try {
+                const response = await fetch(`/api/profile?emp_id=${user.emp_id}`);
+                if (response.ok) {
+                    const profileData = await response.json();
+                    updateUI(profileData);
+                }
+            } catch (error) {
+                console.error("Failed to load profile from server, using cached data.", error);
+            }
+        }
+
+        // Helper to update HTML elements
+        function updateUI(data) {
+            // Generate Avatar
+            const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(data.name)}&background=135bec&color=fff&size=150`;
+
+            // Update Sidebar
+            const sidebarName = document.getElementById("sidebar-name");
+            const sidebarRole = document.getElementById("sidebar-role");
+            const sidebarAvatar = document.getElementById("sidebar-avatar");
+
+            if (sidebarName) sidebarName.innerText = data.name;
+            if (sidebarRole) sidebarRole.innerText = data.role;
+            if (sidebarAvatar) sidebarAvatar.src = avatarUrl;
+
+            // Update Main Content
+            const dispName = document.getElementById("display-name");
+            const dispRole = document.getElementById("display-role");
+            const dispEmail = document.getElementById("display-email");
+            const dispDept = document.getElementById("display-dept");
+            const mainAvatar = document.getElementById("main-avatar-img");
+
+            if (dispName) dispName.innerText = data.name;
+            if (dispRole) dispRole.innerText = data.role;
+            // Using username as email since email field doesn't exist in schema
+            if (dispEmail) dispEmail.innerText = data.username;
+            const department = data.department || data.dept;
+            if (dispDept) dispDept.innerText = department;
+            if (mainAvatar) mainAvatar.src = avatarUrl;
+        }
+
+        loadProfile();
+
+        // --- 3. NAVIGATION ---
+        const links = document.querySelectorAll(".sidebar-link");
+        links.forEach(link => {
+            link.addEventListener("click", () => {
+                links.forEach(l => l.classList.remove("sidebar-active"));
+                link.classList.add("sidebar-active");
+            });
+        });
+
+         function handleLogout() {
+            // Clear user data from LocalStorage
+            localStorage.removeItem("user");
+            // Redirect to login page
+            window.location.href = "AdminLogin.html";
+        }
+
+    </script>
+</body>
+
+</html>

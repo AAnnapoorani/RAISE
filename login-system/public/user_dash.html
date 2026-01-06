@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<!-- ==========================================
+     USER DASHBOARD PAGE
+     ==========================================
+     Main user dashboard with personal statistics and activity
+     Features: Stats overview, recent requests, quick actions
+========================================== -->
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>AAI Hardware - User Dashboard</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <!-- Theme Configuration -->
+    <script src="config.js"></script>
+    <script>
+        tailwind.config = window.TAILWIND_CONFIG;
+    </script>
+    <style>
+        /* Smooth hover animation */
+        .animated-btn {
+            transition: all .25s ease;
+            transform-origin: center;
+        }
+
+        /* Hover grow + shadow */
+        .animated-btn:hover {
+            transform: translateY(-2px) scale(1.01);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, .08);
+        }
+
+        /* Active click ripple */
+        .animated-btn:active {
+            transform: scale(.97);
+        }
+
+        /* glowing primary hover */
+        .glow-primary:hover {
+            box-shadow: 0 0 0 6px rgba(19, 91, 236, 0.12);
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        .dark ::-webkit-scrollbar-thumb {
+            background: #475569;
+        }
+
+        /* Sidebar Active State */
+        .sidebar-active {
+            background: linear-gradient(120deg, #135bec, #0e4bce);
+            color: white !important;
+            box-shadow: 0 10px 20px rgba(19, 91, 236, .25);
+        }
+
+        /* Card Hover Effect */
+        .card-hover {
+            transition: all .3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 25px 40px rgba(0, 0, 0, .12);
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark text-text-main-light dark:text-text-main-dark font-display antialiased overflow-hidden">
+    <script src="components/toast.js"></script>
+    
+    <div class="flex h-screen w-full">
+
+        <aside
+            class="w-64 h-full flex flex-col bg-card-light dark:bg-card-dark border-r border-border-light dark:border-border-dark flex-shrink-0 z-20">
+            <div class="p-6 flex items-center gap-3">
+                <div class="p-2 rounded-lg flex items-center justify-center">
+                    <img src="logo.jpeg" class="w-10 h-10 object-cover rounded" alt="icon">
+                </div>
+                <div>
+                    <a href="user_dash.html">
+                        <h1 class="text-base font-bold leading-none tracking-tight">AAI Hardware</h1>
+                    </a>
+                    <p class="text-xs text-text-muted-light dark:text-text-muted-dark mt-1">User Portal</p>
+                </div>
+            </div>
+            <nav class="flex-1 px-4 py-4 flex flex-col gap-2 overflow-y-auto">
+                <a href="user_dash.html"
+                    class="sidebar-link sidebar-active flex items-center gap-3 px-3 py-2.5 rounded-lg">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">dashboard</span>
+                    <span class="text-sm font-medium">Dashboard</span>
+                </a>
+                <a href="MyRequest.html"
+                    class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-muted-light dark:text-text-muted-dark hover:bg-background-light dark:hover:bg-gray-800 transition-colors">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">assignment</span>
+                    <span class="text-sm font-medium">My Request</span>
+                </a>
+                <a href="TrackRequest.html"
+                    class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-muted-light dark:text-text-muted-dark hover:bg-background-light dark:hover:bg-gray-800 transition-colors">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">history</span>
+                    <span class="text-sm font-medium">Track Request</span>
+                </a>
+                <div class="my-2 border-t border-border-light dark:border-border-dark"></div>
+                <a href="Settings.html"
+                    class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-muted-light dark:text-text-muted-dark hover:bg-background-light dark:hover:bg-gray-800 transition-colors">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">settings</span>
+                    <span class="text-sm font-medium">Settings</span>
+                </a>
+            </nav>
+            <a href="profile_dashboard.html"
+                class="animated-btn gap-4 border-t border-border-light dark:border-border-dark block">
+                <div
+                    class="flex items-center gap-3 p-4 rounded-lg hover:bg-background-light dark:hover:bg-background-dark cursor-pointer transition-colors">
+                    <div class="w-10 h-10 rounded-full bg-cover bg-center border border-gray-200 dark:border-gray-700"
+                        style="background-image: url('https://ui-avatars.com/api/?name=User&background=random');"
+                        id="sidebar-avatar">
+                    </div>
+                    <div class="flex flex-col flex-1 min-w-0">
+                        <p id="sidebar-username"
+                            class="text-sm font-bold text-text-main-light dark:text-text-main-dark truncate">
+                            Loading...</p>
+                        <p id="sidebar-role" class="text-xs text-text-muted-light dark:text-text-muted-dark truncate">
+                            User</p>
+                    </div>
+                </div>
+            </a>
+        </aside>
+
+        <main class="flex-1 flex flex-col h-full overflow-hidden relative">
+
+            <header
+                class="h-16 flex items-center justify-between px-6 bg-card-light dark:bg-card-dark border-b border-border-light dark:border-border-dark flex-shrink-0">
+                <div class="flex items-center w-full max-w-md">
+                    <div class="relative w-full">
+                        <span
+                            class="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted-light dark:text-text-muted-dark material-symbols-outlined text-[20px]">search</span>
+                        <input
+                            class="w-full pl-10 pr-4 py-2 rounded-lg bg-background-light dark:bg-background-dark border-none focus:ring-2 focus:ring-primary text-sm text-text-main-light dark:text-text-main-dark placeholder:text-text-muted-light dark:placeholder:text-text-muted-dark"
+                            placeholder="Search tickets..." type="text" />
+                    </div>
+                </div>
+                <div class="flex items-center gap-4">
+                    <button id="dateButton"
+                        class="animated-btn flex items-center gap-2 px-3 py-2 rounded-lg bg-background-light dark:bg-background-dark text-text-main-light dark:text-text-main-dark hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-sm font-medium">
+                        <span class="material-symbols-outlined text-[18px]">calendar_today</span>
+                        <span id="dateText"></span>
+                    </button>
+                    <button onclick="handleLogout()"
+                        class="animated-btn flex items-center gap-2 px-3 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white text-sm font-medium transition-all">
+                        <span class="material-symbols-outlined text-[18px]">logout</span>
+                        Logout
+                    </button>
+                </div>
+            </header>
+
+            <div class="flex-1 overflow-y-auto bg-background-light dark:bg-background-dark p-6 lg:p-10">
+                <div class="max-w-7xl mx-auto flex flex-col gap-8">
+
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <h2 id="welcome-text"
+                                class="text-3xl font-bold tracking-tight text-text-main-light dark:text-text-main-dark">
+                                Welcome back</h2>
+                            <p class="text-text-muted-light dark:text-text-muted-dark mt-1">
+                                Track your hardware requests and status updates.
+                            </p>
+                        </div>
+                        <a href="user_request.html">
+                            <button
+                                class="animated-btn glow-primary flex items-center gap-2 bg-primary hover:bg-primary-hover text-white px-4 py-2.5 rounded-lg shadow-sm shadow-primary/30 transition-all text-sm font-bold">
+                                <span class="material-symbols-outlined text-[20px]">add</span>
+                                New Request
+                            </button>
+                        </a>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div
+                            class="bg-card-light dark:bg-card-dark p-6 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm flex flex-col justify-between h-36 relative overflow-hidden group hover:bg-blue-50/50 dark:hover:bg-blue-900/10 hover:-translate-y-1 hover:shadow-md transition-all duration-300 cursor-default">
+                            <div
+                                class="absolute right-[-20px] top-[-20px] opacity-5 dark:opacity-10 pointer-events-none group-hover:scale-110 transition-transform duration-500">
+                                <span class="material-symbols-outlined text-[120px]">confirmation_number</span>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <div
+                                    class="bg-blue-100 dark:bg-blue-900/30 p-3 rounded-lg text-blue-600 dark:text-blue-400 group-hover:bg-blue-200 dark:group-hover:bg-blue-800 transition-colors">
+                                    <span class="material-symbols-outlined">confirmation_number</span>
+                                </div>
+                                <p class="font-medium text-text-secondary-light dark:text-text-secondary-dark">Total
+                                    Tickets
+                                </p>
+                            </div>
+                            <div class="flex items-baseline gap-2 mt-4">
+                                <h3 id="total-tickets-count"
+                                    class="text-4xl font-bold text-text-primary-light dark:text-text-primary-dark">0
+                                </h3>
+                                <span
+                                    class="text-sm font-medium text-green-600 bg-green-100 dark:bg-green-900/30 px-2 py-0.5 rounded-full">Lifetime</span>
+                            </div>
+                        </div>
+
+                        <div
+                            class="bg-card-light dark:bg-card-dark p-6 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm flex flex-col justify-between h-36 relative overflow-hidden group hover:bg-orange-50/50 dark:hover:bg-orange-900/10 hover:-translate-y-1 hover:shadow-md transition-all duration-300 cursor-default">
+                            <div
+                                class="absolute right-[-20px] top-[-20px] opacity-5 dark:opacity-10 pointer-events-none group-hover:scale-110 transition-transform duration-500">
+                                <span class="material-symbols-outlined text-[120px]">pending_actions</span>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <div
+                                    class="bg-orange-100 dark:bg-orange-900/30 p-3 rounded-lg text-orange-600 dark:text-orange-400 group-hover:bg-orange-200 dark:group-hover:bg-orange-800 transition-colors">
+                                    <span class="material-symbols-outlined">pending_actions</span>
+                                </div>
+                                <p class="font-medium text-text-secondary-light dark:text-text-secondary-dark">Pending
+                                    Requests
+                                </p>
+                            </div>
+                            <div class="flex items-baseline gap-2 mt-4">
+                                <h3 id="pending-tickets-count"
+                                    class="text-4xl font-bold text-text-primary-light dark:text-text-primary-dark">0
+                                </h3>
+                                <span
+                                    class="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark">Awaiting
+                                    Approval</span>
+                            </div>
+                        </div>
+
+                        <div
+                            class="bg-card-light dark:bg-card-dark p-6 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm flex flex-col justify-between h-36 relative overflow-hidden group hover:bg-green-50/50 dark:hover:bg-green-900/10 hover:-translate-y-1 hover:shadow-md transition-all duration-300 cursor-default">
+                            <div
+                                class="absolute right-[-20px] top-[-20px] opacity-5 dark:opacity-10 pointer-events-none group-hover:scale-110 transition-transform duration-500">
+                                <span class="material-symbols-outlined text-[120px]">check_circle</span>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <div
+                                    class="bg-green-100 dark:bg-green-900/30 p-3 rounded-lg text-green-600 dark:text-green-400 group-hover:bg-green-200 dark:group-hover:bg-green-800 transition-colors">
+                                    <span class="material-symbols-outlined">check_circle</span>
+                                </div>
+                                <p class="font-medium text-text-secondary-light dark:text-text-secondary-dark">Completed
+                                    Services</p>
+                            </div>
+                            <div class="flex items-baseline gap-2 mt-4">
+                                <h3 id="completed-tickets-count"
+                                    class="text-4xl font-bold text-text-primary-light dark:text-text-primary-dark">0
+                                </h3>
+                                <span
+                                    class="text-sm font-medium text-text-secondary-light dark:text-text-secondary-dark">Resolved</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div
+                        class="bg-card-light dark:bg-card-dark rounded-xl overflow-hidden shadow-sm border border-border-light dark:border-border-dark flex flex-col md:flex-row relative">
+                        <div
+                            class="absolute top-0 right-0 w-1/3 h-full bg-gradient-to-l from-blue-50 to-transparent dark:from-blue-900/10 pointer-events-none">
+                        </div>
+                        <div class="p-8 md:p-10 flex flex-col justify-center gap-4 flex-1 z-10">
+                            <div
+                                class="inline-flex items-center gap-2 px-3 py-1 bg-blue-50 dark:bg-blue-900/20 text-primary rounded-full w-fit">
+                                <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                                <span class="text-xs font-bold uppercase tracking-wider">Fast Support</span>
+                            </div>
+                            <h2
+                                class="text-2xl md:text-3xl font-bold text-text-main-light dark:text-text-main-dark tracking-tight">
+                                Need assistance?
+                            </h2>
+                            <p class="text-text-muted-light dark:text-text-muted-dark text-lg max-w-xl">
+                                Submit a new maintenance request to get immediate support from our technicians.
+                            </p>
+                            <div class="mt-2">
+                                <a href="raise_main.html">
+                                    <button
+                                        class="animated-btn glow-primary inline-flex items-center justify-center h-10 px-6 rounded-lg bg-primary hover:bg-primary-hover text-white font-bold transition-all shadow-lg shadow-primary/30">
+                                        Raise New Maintenance Request
+                                    </button>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div
+                        class="bg-card-light dark:bg-card-dark rounded-xl border border-border-light dark:border-border-dark overflow-hidden shadow-sm">
+                        <div
+                            class="p-6 border-b border-border-light dark:border-border-dark flex justify-between items-center">
+                            <h3 class="text-lg font-bold text-text-main-light dark:text-text-main-dark">Recent Activity
+                            </h3>
+                            <a id="view-all-link" href="javascript:void(0)" onclick="toggleRecentActivity()"
+                                class="text-sm font-semibold text-primary hover:text-primary-hover flex items-center gap-1">
+                                View All <span class="material-symbols-outlined text-sm">arrow_forward</span>
+                            </a>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm text-text-muted-light dark:text-text-muted-dark">
+                                <thead
+                                    class="bg-background-light dark:bg-background-dark text-xs uppercase font-bold text-text-main-light dark:text-text-main-dark">
+                                    <tr>
+                                        <th class="px-6 py-4">Ticket ID</th>
+                                        <th class="px-6 py-4">Printer Model</th>
+                                        <th class="px-6 py-4">Issue Type</th>
+                                        <th class="px-6 py-4">Date</th>
+                                        <th class="px-6 py-4">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="activity-table-body"
+                                    class="divide-y divide-border-light dark:divide-border-dark">
+                                    <tr>
+                                        <td colspan="5"
+                                            class="px-6 py-8 text-center text-text-muted-light dark:text-text-muted-dark">
+                                            Loading recent requests...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <footer class="mt-auto py-6 text-center text-sm text-text-muted-light dark:text-text-muted-dark">
+                        © AAI Hardware Request Management System. All rights reserved.
+                    </footer>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // --- 1. AUTHENTICATION & USER CHECK ---
+        const user = JSON.parse(localStorage.getItem("user"));
+
+        // Ensure user is logged in
+        if (!user) {
+            window.location.href = "login.html"; // Redirect if no session
+        } else {
+            // Update Welcome Message
+            const welcomeElement = document.getElementById('welcome-text');
+            if (welcomeElement) {
+                const name = user.name || "User";
+                welcomeElement.innerText = `Welcome back, ${name}`;
+            }
+
+            // Update Sidebar Name
+            if (document.getElementById("sidebar-username")) {
+                document.getElementById("sidebar-username").innerText = user.name || "User";
+            }
+            // Dynamic Avatar
+            if (document.getElementById("sidebar-avatar") && user.name) {
+                document.getElementById("sidebar-avatar").style.backgroundImage =
+                    `url('https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=135bec&color=fff')`;
+            }
+        }
+
+        // --- 2. LOAD DASHBOARD DATA ---
+        async function loadUserDashboard() {
+            if (!user || !user.emp_id) return;
+
+            try {
+                // A. Load Stats (Cards)
+                const statsRes = await fetch(`/api/user/dashboard/stats?emp_id=${user.emp_id}`);
+                const stats = await statsRes.json();
+
+                if (statsRes.ok) {
+                    document.getElementById('total-tickets-count').innerText = stats.total || 0;
+                    document.getElementById('pending-tickets-count').innerText = stats.pending || 0;
+                    document.getElementById('completed-tickets-count').innerText = stats.completed || 0;
+                }
+
+                // B. Load Recent Activity (Table)
+                const activityRes = await fetch(`/api/user/dashboard/activity?emp_id=${user.emp_id}`);
+                const activities = await activityRes.json();
+
+                const tableBody = document.getElementById('activity-table-body');
+                tableBody.innerHTML = ""; // Clear loading row
+
+                if (activities.length === 0) {
+                    tableBody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center text-text-muted-light">No recent requests found.</td></tr>`;
+                    return;
+                }
+
+                activities.forEach(req => {
+                    const date = new Date(req.order_date).toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" });
+
+                    // Status Color Logic
+                    let statusColor = "bg-orange-100 text-orange-800 dark:bg-orange-900/30 dark:text-orange-500";
+                    let icon = "warning";
+                    let iconColor = "text-orange-500";
+
+                    if (req.status === "Approved" || req.status === "In Progress") {
+                        statusColor = "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-500";
+                        icon = "ink_highlighter";
+                        iconColor = "text-blue-500";
+                    } else if (req.status === "Completed") {
+                        statusColor = "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-500";
+                        icon = "check_circle";
+                        iconColor = "text-green-500";
+                    } else if (req.status === "Rejected") {
+                        statusColor = "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-500";
+                        icon = "cancel";
+                        iconColor = "text-red-500";
+                    }
+
+                    const row = `
+                    <tr class="hover:bg-background-light/50 dark:hover:bg-gray-800/50 transition-colors">
+                        <td class="px-6 py-4 font-medium text-text-main-light dark:text-text-main-dark">#${req.request_id}</td>
+                        <td class="px-6 py-4">${req.model}</td>
+                        <td class="px-6 py-4">
+                            <div class="flex items-center gap-2">
+                                <span class="material-symbols-outlined text-lg ${iconColor}">${icon}</span>
+                                ${req.issue}
+                            </div>
+                        </td>
+                        <td class="px-6 py-4">${date}</td>
+                        <td class="px-6 py-4">
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${statusColor}">
+                                ${req.status}
+                            </span>
+                        </td>
+                    </tr>`;
+
+                    tableBody.innerHTML += row;
+                });
+
+            } catch (error) {
+                console.error("Error loading user dashboard:", error);
+            }
+        }
+
+        // Initialize Data Load
+        loadUserDashboard();
+
+        // --- 3. UTILITIES ---
+
+        // Date Display
+        function formatDate(date) {
+            return date.toLocaleDateString("en-US", { month: "short", day: "2-digit", year: "numeric" });
+        }
+        function setToday() {
+            const dateText = document.getElementById("dateText");
+            if (dateText) dateText.innerText = formatDate(new Date());
+        }
+        setToday();
+
+        // Toggle Recent Activity
+        function toggleRecentActivity() {
+            window.location.href = "MyRequest.html";
+        }
+
+        // Sidebar Navigation
+        const links = document.querySelectorAll(".sidebar-link");
+        links.forEach(link => {
+            link.addEventListener("click", () => {
+                links.forEach(l => l.classList.remove("sidebar-active"));
+                link.classList.add("sidebar-active");
+            });
+        });
+
+    </script>
+</body>
+
+</html>

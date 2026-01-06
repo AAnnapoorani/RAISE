@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Raise Maintenance Request - AAI Hardware</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <script src="config.js"></script>
+    <script>
+        tailwind.config = window.TAILWIND_CONFIG;
+    </script>
+
+    <style>
+        .animated-btn {
+            transition: all .25s ease;
+            transform-origin: center;
+        }
+
+        .animated-btn:hover {
+            transform: translateY(-2px) scale(1.01);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, .08);
+        }
+
+        .animated-btn:active {
+            transform: scale(.97);
+        }
+
+        .glow-primary:hover {
+            box-shadow: 0 0 0 6px rgba(19, 91, 236, 0.12);
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        .dark ::-webkit-scrollbar-thumb {
+            background: #475569;
+        }
+
+        .sidebar-active {
+            background: linear-gradient(120deg, #135bec, #0e4bce);
+            color: white !important;
+            box-shadow: 0 10px 20px rgba(19, 91, 236, .25);
+        }
+
+        .card-hover {
+            transition: all .3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 25px 40px rgba(0, 0, 0, .12);
+        }
+
+        body {
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark text-text-main-light dark:text-text-main-dark font-display antialiased overflow-hidden h-screen flex">
+    <script src="components/sidebar.js"></script>
+
+    <main class="flex-1 flex flex-col relative z-0">
+
+        <aside
+            class="w-64 h-full flex flex-col bg-card-light dark:bg-card-dark border-r border-border-light dark:border-border-dark flex-shrink-0 z-20">
+            <div class="p-6 flex items-center gap-3">
+                <div class="p-2 rounded-lg flex items-center justify-center">
+                    <img src="logo.jpeg" class="w-10 h-10 object-cover rounded" alt="icon">
+                </div>
+                <div>
+                    <a href="user_dash.html">
+                        <h1 class="text-base font-bold leading-none tracking-tight">AAI Hardware</h1>
+                    </a>
+                    <p class="text-xs text-text-muted-light dark:text-text-muted-dark mt-1">User Portal</p>
+                </div>
+            </div>
+            <nav class="flex-1 px-4 py-4 flex flex-col gap-2 overflow-y-auto">
+                <a href="user_dash.html"
+                    class="sidebar-link sidebar-active flex items-center gap-3 px-3 py-2.5 rounded-lg">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">dashboard</span>
+                    <span class="text-sm font-medium">Dashboard</span>
+                </a>
+                <a href="MyRequest.html"
+                    class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-muted-light dark:text-text-muted-dark hover:bg-background-light dark:hover:bg-gray-800 transition-colors">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">assignment</span>
+                    <span class="text-sm font-medium">My Request</span>
+                </a>
+                <a href="TrackRequest.html"
+                    class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-muted-light dark:text-text-muted-dark hover:bg-background-light dark:hover:bg-gray-800 transition-colors">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">history</span>
+                    <span class="text-sm font-medium">Track Request</span>
+                </a>
+                <div class="my-2 border-t border-border-light dark:border-border-dark"></div>
+                <a href="Settings.html"
+                    class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-muted-light dark:text-text-muted-dark hover:bg-background-light dark:hover:bg-gray-800 transition-colors">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">settings</span>
+                    <span class="text-sm font-medium">Settings</span>
+                </a>
+            </nav>
+            <a href="profile_dashboard.html"
+                class="animated-btn gap-4 border-t border-border-light dark:border-border-dark block">
+                <div
+                    class="flex items-center gap-3 p-4 rounded-lg hover:bg-background-light dark:hover:bg-background-dark cursor-pointer transition-colors">
+                    <div id="sidebar-avatar"
+                        class="w-10 h-10 rounded-full bg-cover bg-center border border-gray-200 dark:border-gray-700"
+                        style="background-image: url('https://ui-avatars.com/api/?name=User&background=random');">
+                    </div>
+                    <div class="flex flex-col flex-1 min-w-0">
+                        <p id="sidebar-name"
+                            class="text-sm font-bold text-text-main-light dark:text-text-main-dark truncate">
+                            Loading...</p>
+                        <p id="sidebar-id" class="text-xs text-text-muted-light dark:text-text-muted-dark truncate">
+                            ...</p>
+                    </div>
+                </div>
+            </a>
+        </aside>
+
+        <header
+            class="h-16 flex items-center justify-between px-6 bg-card-light dark:bg-card-dark border-b border-border-light dark:border-border-dark flex-shrink-0">
+            <div class="flex items-center w-full max-w-md">
+                <div class="relative w-full">
+                    <span
+                        class="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted-light dark:text-text-muted-dark material-symbols-outlined text-[20px]">search</span>
+                    <input
+                        class="w-full pl-10 pr-4 py-2 rounded-lg bg-background-light dark:bg-background-dark border-none focus:ring-2 focus:ring-primary text-sm text-text-main-light dark:text-text-main-dark placeholder:text-text-muted-light dark:placeholder:text-text-muted-dark"
+                        placeholder="Search tickets, technicians..." type="text" />
+                </div>
+            </div>
+            <div class="flex items-center gap-4">
+                <button onclick="handleLogout()"
+                    class="animated-btn flex items-center gap-2 px-3 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white text-sm font-medium transition-all">
+                    <span class="material-symbols-outlined text-[18px]">logout</span>
+                    Logout
+                </button>
+            </div>
+        </header>
+
+        <div class="flex-1 p-6 lg:p-10 opacity-30 pointer-events-none filter blur-[2px]">
+            <header class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+                <div>
+                    <h1 class="text-3xl font-bold tracking-tight text-text-main-light dark:text-text-main-dark">Welcome
+                        back, Alex</h1>
+                </div>
+            </header>
+            <section class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div
+                    class="bg-card-light dark:bg-card-dark p-6 rounded-xl border border-border-light dark:border-border-dark h-36">
+                </div>
+                <div
+                    class="bg-card-light dark:bg-card-dark p-6 rounded-xl border border-border-light dark:border-border-dark h-36">
+                </div>
+                <div
+                    class="bg-card-light dark:bg-card-dark p-6 rounded-xl border border-border-light dark:border-border-dark h-36">
+                </div>
+            </section>
+        </div>
+
+        <div
+            class="absolute inset-0 z-50 flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+
+            <section
+                class="bg-card-light dark:bg-card-dark w-full max-w-4xl max-h-[90vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden ring-1 ring-border-light dark:ring-border-dark">
+
+                <div
+                    class="flex items-center justify-between px-6 py-5 border-b border-border-light dark:border-border-dark">
+                    <div>
+                        <h2
+                            class="text-text-main-light dark:text-text-main-dark text-xl font-bold leading-tight tracking-[-0.015em]">
+                            New Maintenance Request</h2>
+                        <p class="text-text-muted-light dark:text-text-muted-dark text-sm font-medium mt-1">
+                            Submit a ticket for hardware resources. Our team will review shortly.
+                        </p>
+                    </div>
+                    <a href="user_dash.html">
+                        <button
+                            class="p-2 rounded-full hover:bg-background-light dark:hover:bg-gray-800 text-text-muted-light dark:text-text-muted-dark transition-colors">
+                            <span class="material-symbols-outlined">close</span>
+                        </button>
+                    </a>
+                </div>
+
+                <div class="flex-1 overflow-y-auto p-6 lg:p-8 bg-background-light/50 dark:bg-background-dark/50">
+                    <div class="max-w-3xl mx-auto space-y-8">
+
+                        <div
+                            class="bg-blue-50/50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-900/30 rounded-xl p-5">
+                            <div
+                                class="flex items-center gap-2 mb-3 text-primary font-bold text-sm uppercase tracking-wider">
+                                <span class="material-symbols-outlined text-[18px]">badge</span>
+                                <span>Requester Details (Auto-filled)</span>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                <div>
+                                    <p
+                                        class="text-text-muted-light dark:text-text-muted-dark text-xs font-bold uppercase mb-1">
+                                        Full Name</p>
+                                    <p id="display-name"
+                                        class="text-text-main-light dark:text-text-main-dark text-base font-medium">
+                                        Loading...</p>
+                                </div>
+                                <div>
+                                    <p
+                                        class="text-text-muted-light dark:text-text-muted-dark text-xs font-bold uppercase mb-1">
+                                        Employee ID</p>
+                                    <p id="display-id"
+                                        class="text-text-main-light dark:text-text-main-dark text-base font-medium">
+                                        Loading...</p>
+                                </div>
+                                <div>
+                                    <p
+                                        class="text-text-muted-light dark:text-text-muted-dark text-xs font-bold uppercase mb-1">
+                                        Department</p>
+                                    <p id="display-dept"
+                                        class="text-text-main-light dark:text-text-main-dark text-base font-medium">
+                                        Loading...</p>
+                                </div>
+                                <div>
+                                    <p
+                                        class="text-text-muted-light dark:text-text-muted-dark text-xs font-bold uppercase mb-1">
+                                        Request Date</p>
+                                    <p id="display-date"
+                                        class="text-text-main-light dark:text-text-main-dark text-base font-medium">
+                                        Loading...</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <h3
+                                class="text-lg font-bold text-text-main-light dark:text-text-main-dark flex items-center gap-2">
+                                <span
+                                    class="material-symbols-outlined text-text-muted-light dark:text-text-muted-dark">devices</span>
+                                Hardware Details
+                            </h3>
+                            <div class="grid grid-cols-1 gap-4">
+                                <label class="flex flex-col flex-1">
+                                    <p class="text-text-main-light dark:text-text-main-dark text-sm font-medium pb-2">
+                                        Select Your Allocated Hardware</p>
+                                    <select id="input-hardware"
+                                        class="flex w-full rounded-lg text-text-main-light dark:text-text-main-dark focus:ring-2 focus:ring-primary border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark h-11 px-4 text-sm transition-all">
+                                        <option disabled="" selected="" value="">Loading your hardware...</option>
+                                    </select>
+                                    <p class="text-text-muted-light dark:text-text-muted-dark text-xs mt-2">Select from hardware allocated to your account</p>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <h3
+                                class="text-lg font-bold text-text-main-light dark:text-text-main-dark flex items-center gap-2">
+                                <span
+                                    class="material-symbols-outlined text-text-muted-light dark:text-text-muted-dark">bug_report</span>
+                                Issue Details
+                            </h3>
+                            <div class="grid grid-cols-1 gap-4">
+                                <label class="flex flex-col flex-1">
+                                    <p class="text-text-main-light dark:text-text-main-dark text-sm font-medium pb-2">
+                                        Issue Category</p>
+                                    <select id="select-issue"
+                                        class="flex w-full rounded-lg text-text-main-light dark:text-text-main-dark focus:ring-2 focus:ring-primary border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark h-11 px-4 text-sm transition-all">
+                                        <option disabled="" selected="" value="">Select issue type</option>
+                                        <option value="Hardware Failure">Hardware Failure (Desktop/Laptop)</option>
+                                        <option value="Peripheral Issue">Peripheral Issue (Keyboard/Mouse/Monitor)</option>
+                                        <option value="Printer">Printer/Scanner Issue</option>
+                                        <option value="Power">Power/Battery Issue</option>
+                                        <option value="Physical Damage">Physical Damage / Repairs</option>
+                                        <option value="Other">Other Hardware Issue</option>
+                                    </select>
+                                </label>
+                            </div>
+                            <label class="flex flex-col w-full">
+                                <p class="text-text-main-light dark:text-text-main-dark text-sm font-medium pb-2">
+                                    Description</p>
+                                <textarea id="text-desc"
+                                    class="flex w-full rounded-lg text-text-main-light dark:text-text-main-dark focus:ring-2 focus:ring-primary border border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark h-32 placeholder:text-text-muted-light dark:placeholder:text-text-muted-dark p-4 text-sm resize-none transition-all"
+                                    placeholder="Please describe the issue in detail. Include error messages if any."></textarea>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    class="px-6 py-4 border-t border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark flex justify-end items-center gap-3">
+                    <a href="user_dash.html">
+                        <button
+                            class="animated-btn px-6 h-11 rounded-lg border border-border-light dark:border-border-dark text-text-muted-light dark:text-text-muted-dark font-bold hover:bg-background-light dark:hover:bg-gray-800 transition-colors text-sm">
+                            Cancel
+                        </button>
+                    </a>
+                    <button id="submit-btn" onclick="submitRequest()"
+                        class="animated-btn glow-primary px-6 h-11 rounded-lg bg-primary hover:bg-primary-hover text-white font-bold shadow-lg shadow-primary/30 transition-all text-sm flex items-center gap-2">
+                        <span>Submit Request</span>
+                        <span class="material-symbols-outlined text-sm">send</span>
+                    </button>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="components/toast.js"></script>
+
+    <script>
+        // --- 1. SETUP & AUTH ---
+        const user = JSON.parse(localStorage.getItem("user"));
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!user) {
+                window.location.href = "login.html";
+                return;
+            }
+            // Load employee details and hardware from database
+            loadEmployeeDetails();
+            loadUserHardware();
+        });
+
+        // --- FETCH EMPLOYEE DETAILS FROM DATABASE ---
+        async function loadEmployeeDetails() {
+            try {
+                const response = await fetch(`/api/profile?emp_id=${encodeURIComponent(user.emp_id)}`);
+                if (!response.ok) throw new Error('Failed to fetch employee details');
+                
+                const empData = await response.json();
+                
+                // Populate Sidebar
+                if (document.getElementById("sidebar-name")) document.getElementById("sidebar-name").innerText = empData.name || user.name || "User";
+                if (document.getElementById("sidebar-id")) document.getElementById("sidebar-id").innerText = empData.emp_id || user.emp_id || "ID";
+                
+                // Populate Request Details from Database
+                if (document.getElementById("display-name")) document.getElementById("display-name").innerText = empData.name || "Unknown";
+                if (document.getElementById("display-id")) document.getElementById("display-id").innerText = empData.emp_id || "N/A";
+                const department = empData.department || empData.dept;
+                if (document.getElementById("display-dept")) document.getElementById("display-dept").innerText = department || "N/A";
+                if (document.getElementById("display-date")) document.getElementById("display-date").innerText = new Date().toLocaleDateString() || "N/A";
+                
+                // Update avatar
+                if (empData.name && document.getElementById("sidebar-avatar")) {
+                    const avatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(empData.name)}&background=135bec&color=fff`;
+                    document.getElementById("sidebar-avatar").style.backgroundImage = `url('${avatar}')`;
+                }
+            } catch (error) {
+                console.error("Error loading employee details:", error);
+                // Fallback to localStorage data
+                if (document.getElementById("display-name")) document.getElementById("display-name").innerText = user.name || "Unknown";
+                if (document.getElementById("display-id")) document.getElementById("display-id").innerText = user.emp_id || "N/A";
+                const departmentUser = user.department || user.dept;
+                if (document.getElementById("display-dept")) document.getElementById("display-dept").innerText = departmentUser || "N/A";
+                if (document.getElementById("display-date")) document.getElementById("display-date").innerText = new Date().toLocaleDateString();
+            }
+        }
+
+        // --- FETCH USER'S ALLOCATED HARDWARE ---
+        async function loadUserHardware() {
+            try {
+                const response = await fetch(`/api/tickets/user-hardware/${user.emp_id}`);
+                if (!response.ok) throw new Error('Failed to fetch user hardware');
+                
+                const data = await response.json();
+                const hardwareSelect = document.getElementById("input-hardware");
+                
+                if (!data.hardware || data.hardware.length === 0) {
+                    hardwareSelect.innerHTML = '<option disabled selected value="">No hardware allocated to you</option>';
+                    showToast("No hardware allocated to your account. Please contact your administrator.", "warning");
+                    return;
+                }
+
+                // Store hardware data globally for later use
+                window.userHardware = data.hardware;
+                
+                // Build options with data attributes
+                let optionsHTML = '<option disabled selected value="">Select your hardware</option>';
+                data.hardware.forEach(hw => {
+                    optionsHTML += `<option value="${hw.asset_id}" data-name="${hw.name}" data-model="${hw.model}" data-brand="${hw.brand}">${hw.name} (${hw.model}) - ${hw.asset_id}</option>`;
+                });
+                
+                hardwareSelect.innerHTML = optionsHTML;
+            } catch (error) {
+                console.error("Error loading user hardware:", error);
+                const hardwareSelect = document.getElementById("input-hardware");
+                hardwareSelect.innerHTML = '<option disabled selected value="">Error loading hardware. Please refresh.</option>';
+                showToast("Failed to load your allocated hardware.", "error");
+            }
+        }
+
+        // --- 2. SUBMIT REQUEST LOGIC ---
+        async function submitRequest() {
+            const submitBtn = document.getElementById("submit-btn");
+            const hardwareSelect = document.getElementById("input-hardware");
+            const selectedOption = hardwareSelect.options[hardwareSelect.selectedIndex];
+
+            // Gather Data
+            const payload = {
+                emp_id: user.emp_id,
+                asset_id: selectedOption.value,
+                hardware_name: selectedOption.getAttribute("data-name"),
+                issue_type: document.getElementById("select-issue").value,
+                priority: "Medium",
+                description: document.getElementById("text-desc").value.trim(),
+                quantity: 1
+            };
+
+            // Validation
+            if (!payload.asset_id || payload.asset_id === "" || !payload.issue_type || !payload.description) {
+                showToast("Please fill in all required fields (Hardware, Request Type, Description).", "error");
+                return;
+            }
+
+            // Loading State
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerText = "Submitting...";
+            submitBtn.disabled = true;
+
+            try {
+                // Call the updated API endpoint
+                const response = await fetch("/api/tickets/create", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    showToast(`Request #${result.request_id}, submitted successfully!`);
+                    window.location.href = "user_dash.html"; // Redirect
+                } else {
+                    showToast("Error: " + result.message, "error");
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                }
+
+            } catch (error) {
+                console.error("Submit Error:", error);
+                showToast("Failed to connect to the server.", "error");
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            }
+        }
+
+        // 3. Sidebar Active State (Visual)
+        const links = document.querySelectorAll(".sidebar-link");
+        links.forEach(link => {
+            link.addEventListener("click", () => {
+                links.forEach(l => l.classList.remove("sidebar-active"));
+                link.classList.remove("text-text-muted-light", "dark:text-text-muted-dark");
+                link.classList.add("sidebar-active");
+            });
+        });
+
+        // 4. Logout Logic
+        function handleLogout() {
+            if (confirm("Are you sure you want to log out?")) {
+                localStorage.removeItem("user");
+                window.location.href = "login.html";
+            }
+        }
+    </script>
+</body>
+
+</html>

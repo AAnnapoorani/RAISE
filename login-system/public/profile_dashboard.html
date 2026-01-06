@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<!-- ==========================================
+     USER PROFILE PAGE
+     ==========================================
+     User profile viewing and editing interface
+     Features: View personal details, edit profile, update information
+========================================== -->
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>My Profile - AAI Hardware</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+        rel="stylesheet" />
+
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <!-- Theme Configuration -->
+    <script src="config.js"></script>
+    <script>
+        tailwind.config = window.TAILWIND_CONFIG;
+    </script>
+
+    <style>
+        .animated-btn {
+            transition: all .25s ease;
+            transform-origin: center;
+        }
+
+        .animated-btn:hover {
+            transform: translateY(-2px) scale(1.01);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, .08);
+        }
+
+        .animated-btn:active {
+            transform: scale(.97);
+        }
+
+        .glow-primary:hover {
+            box-shadow: 0 0 0 6px rgba(19, 91, 236, 0.12);
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        .dark ::-webkit-scrollbar-thumb {
+            background: #475569;
+        }
+
+        .sidebar-active {
+            background: linear-gradient(120deg, #135bec, #0e4bce);
+            color: white !important;
+            box-shadow: 0 10px 20px rgba(19, 91, 236, .25);
+        }
+
+        .card-hover {
+            transition: all .3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 25px 40px rgba(0, 0, 0, .12);
+        }
+    </style>
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark text-text-main-light dark:text-text-main-dark font-display antialiased overflow-hidden h-screen flex">
+    <script src="components/toast.js"></script>
+
+    <aside
+        class="w-64 h-full flex flex-col bg-card-light dark:bg-card-dark border-r border-border-light dark:border-border-dark flex-shrink-0 z-20">
+        <div class="p-6 flex items-center gap-3">
+            <div class="p-2 rounded-lg flex items-center justify-center">
+                <img src="logo.jpeg" class="w-10 h-10 object-cover rounded" alt="icon">
+            </div>
+            <div>
+                <a href="user_dash.html">
+                    <h1 class="text-base font-bold leading-none tracking-tight">AAI Hardware</h1>
+                </a>
+                <p class="text-xs text-text-muted-light dark:text-text-muted-dark mt-1">User Portal</p>
+            </div>
+        </div>
+        <nav class="flex-1 px-4 py-4 flex flex-col gap-2 overflow-y-auto">
+            <a href="user_dash.html"
+                class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-muted-light dark:text-text-muted-dark hover:bg-background-light dark:hover:bg-gray-800 transition-colors">
+                <span class="material-symbols-outlined" style="font-size: 20px;">dashboard</span>
+                <span class="text-sm font-medium">Dashboard</span>
+            </a>
+            <a href="MyRequest.html"
+                class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-muted-light dark:text-text-muted-dark hover:bg-background-light dark:hover:bg-gray-800 transition-colors">
+                <span class="material-symbols-outlined" style="font-size: 20px;">assignment</span>
+                <span class="text-sm font-medium">My Request</span>
+            </a>
+            <a href="TrackRequest.html"
+                class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-muted-light dark:text-text-muted-dark hover:bg-background-light dark:hover:bg-gray-800 transition-colors">
+                <span class="material-symbols-outlined" style="font-size: 20px;">history</span>
+                <span class="text-sm font-medium">Track Request</span>
+            </a>
+            <div class="my-2 border-t border-border-light dark:border-border-dark"></div>
+            <a href="Settings.html"
+                class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-text-muted-light dark:text-text-muted-dark hover:bg-background-light dark:hover:bg-gray-800 transition-colors">
+                <span class="material-symbols-outlined" style="font-size: 20px;">settings</span>
+                <span class="text-sm font-medium">Settings</span>
+            </a>
+        </nav>
+        <a href="profile_dashboard.html"
+            class="animated-btn gap-4 border-t border-border-light dark:border-border-dark block bg-background-light dark:bg-gray-800/50">
+            <div class="flex items-center gap-3 p-4 rounded-lg cursor-pointer transition-colors">
+                <div id="sidebar-avatar"
+                    class="w-10 h-10 rounded-full bg-cover bg-center border border-gray-200 dark:border-gray-700"
+                    style="background-image: url('https://ui-avatars.com/api/?name=User&background=random');">
+                </div>
+                <div class="flex flex-col flex-1 min-w-0">
+                    <p id="sidebar-name"
+                        class="text-sm font-bold text-text-main-light dark:text-text-main-dark truncate">
+                        Loading...</p>
+                    <p id="sidebar-role" class="text-xs text-text-muted-light dark:text-text-muted-dark truncate">
+                        User</p>
+                </div>
+            </div>
+        </a>
+    </aside>
+
+    <main class="flex-1 flex flex-col relative z-0 h-full overflow-hidden">
+
+        <header
+            class="h-16 flex-none border-b border-border-light dark:border-border-dark bg-card-light dark:bg-card-dark flex items-center justify-between px-6 z-20">
+            <div class="flex items-center gap-2 text-text-muted-light dark:text-text-muted-dark text-sm">
+                <a href="user_dash.html"
+                    class="material-symbols-outlined text-[24px] hover:text-primary transition-colors">home</a>
+                <span>/</span>
+                <a href="profile_dashboard.html" class="text-text-main-light dark:text-text-main-dark font-medium">My
+                    Profile</a>
+            </div>
+            <div class="flex items-center gap-4">
+                <button onclick="handleLogout()"
+                    class="animated-btn flex items-center gap-2 px-3 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white text-sm font-medium transition-all">
+                    <span class="material-symbols-outlined text-[18px]">logout</span>
+                    Logout
+                </button>
+            </div>
+        </header>
+
+        <div class="flex-1 overflow-y-auto p-6 md:p-8 bg-background-light dark:bg-background-dark">
+            <div class="max-w-[1280px] mx-auto">
+                <div class="mb-8">
+                    <h1 class="text-3xl font-bold text-text-main-light dark:text-text-main-dark">My Profile</h1>
+                    <p class="text-text-muted-light dark:text-text-muted-dark mt-1">Manage your account settings and
+                        preferences</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+                    <div class="lg:col-span-4">
+                        <div
+                            class="card-hover bg-card-light dark:bg-card-dark rounded-xl shadow-sm border border-border-light dark:border-border-dark p-8 flex flex-col items-center text-center">
+                            <div class="mb-6 relative group">
+                                <div id="profile-avatar-large"
+                                    class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-32 shadow-md border-4 border-background-light dark:border-background-dark"
+                                    style="background-image: url('https://ui-avatars.com/api/?name=User&background=random');">
+                                </div>
+                                <div
+                                    class="absolute bottom-0 right-0 bg-primary text-white p-2 rounded-full shadow-lg cursor-pointer hover:bg-primary-hover transition-colors">
+                                    <span class="material-symbols-outlined text-[18px] block">photo_camera</span>
+                                </div>
+                            </div>
+                            <h2 id="display-name"
+                                class="text-2xl font-bold text-text-main-light dark:text-text-main-dark">Loading...
+                            </h2>
+                            <p id="display-role"
+                                class="text-text-muted-light dark:text-text-muted-dark font-medium mb-4">...
+                            </p>
+                            <span
+                                class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-400 text-xs font-bold uppercase tracking-wider border border-green-100 dark:border-green-800">
+                                <span class="size-2 rounded-full bg-green-500 animate-pulse"></span> Active
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-8">
+                        <section
+                            class="card-hover bg-card-light dark:bg-card-dark rounded-xl shadow-sm border border-border-light dark:border-border-dark overflow-hidden">
+                            <div
+                                class="px-6 py-5 border-b border-border-light dark:border-border-dark flex justify-between items-center bg-background-light/50 dark:bg-gray-800/30">
+                                <h2 class="text-text-main-light dark:text-text-main-dark text-lg font-bold">Personal
+                                    Information</h2>
+                                <div id="button-group">
+                                    <button id="edit-btn" onclick="toggleEditMode(true)"
+                                        class="animated-btn flex items-center gap-2 bg-primary hover:bg-primary-hover text-white text-sm font-bold py-2 px-4 rounded-lg transition-colors">
+                                        <span class="material-symbols-outlined text-[18px]">edit</span> Edit Profile
+                                    </button>
+                                    <div id="save-cancel-group" class="hidden flex gap-2">
+                                        <button onclick="toggleEditMode(false)"
+                                            class="px-4 py-2 bg-background-light dark:bg-gray-700 text-text-main-light dark:text-text-main-dark border border-border-light dark:border-border-dark rounded-lg text-sm font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">Cancel</button>
+                                        <button onclick="saveProfileChanges()"
+                                            class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg text-sm font-bold transition-colors shadow-lg shadow-green-600/20">Save
+                                            Changes</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="p-6">
+                                <form id="profile-form" class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                                    <div class="flex flex-col gap-1.5">
+                                        <label
+                                            class="text-text-muted-light dark:text-text-muted-dark text-xs font-bold uppercase">Full
+                                            Name</label>
+                                        <input name="name" id="input-name" type="text" readonly
+                                            class="edit-input w-full p-3 rounded-lg border border-transparent bg-background-light dark:bg-background-dark text-text-main-light dark:text-text-main-dark focus:ring-0 outline-none transition-all">
+                                    </div>
+                                    <div class="flex flex-col gap-1.5">
+                                        <label
+                                            class="text-text-muted-light dark:text-text-muted-dark text-xs font-bold uppercase">Employee
+                                            ID</label>
+                                        <input name="emp_id" id="input-emp-id" type="text" readonly
+                                            class="edit-input w-full p-3 rounded-lg border border-transparent bg-background-light dark:bg-background-dark text-text-main-light dark:text-text-main-dark focus:ring-0 outline-none transition-all opacity-70 cursor-not-allowed">
+                                    </div>
+                                    <div class="flex flex-col gap-1.5">
+                                        <label
+                                            class="text-text-muted-light dark:text-text-muted-dark text-xs font-bold uppercase">Email
+                                            Address</label>
+                                        <input name="email" id="input-email" type="email" readonly
+                                            class="edit-input w-full p-3 rounded-lg border border-transparent bg-background-light dark:bg-background-dark text-text-main-light dark:text-text-main-dark focus:ring-0 outline-none transition-all">
+                                    </div>
+                                    <div class="flex flex-col gap-1.5">
+                                        <label
+                                            class="text-text-muted-light dark:text-text-muted-dark text-xs font-bold uppercase">Phone
+                                            Number</label>
+                                        <input name="phone" id="input-phone" type="text" placeholder="Not set" readonly
+                                            class="edit-input w-full p-3 rounded-lg border border-transparent bg-background-light dark:bg-background-dark text-text-main-light dark:text-text-main-dark focus:ring-0 outline-none transition-all">
+                                    </div>
+                                    <div class="flex flex-col gap-1.5">
+                                        <label
+                                            class="text-text-muted-light dark:text-text-muted-dark text-xs font-bold uppercase">Department</label>
+                                        <input name="dept" id="input-dept" type="text" readonly
+                                            class="edit-input w-full p-3 rounded-lg border border-transparent bg-background-light dark:bg-background-dark text-text-main-light dark:text-text-main-dark focus:ring-0 outline-none transition-all">
+                                    </div>
+                                    <div class="flex flex-col gap-1.5">
+                                        <label
+                                            class="text-text-muted-light dark:text-text-muted-dark text-xs font-bold uppercase">Office
+                                            Location</label>
+                                        <input name="location" id="input-location" type="text" placeholder="Not set"
+                                            readonly
+                                            class="edit-input w-full p-3 rounded-lg border border-transparent bg-background-light dark:bg-background-dark text-text-main-light dark:text-text-main-dark focus:ring-0 outline-none transition-all">
+                                    </div>
+                                </form>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // --- 1. GLOBAL VARIABLES ---
+        const user = JSON.parse(localStorage.getItem("user"));
+        let originalData = {};
+
+        // --- 2. INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!user) {
+                window.location.href = "login.html";
+            } else {
+                fetchProfileData();
+            }
+        });
+
+        // --- 3. FETCH PROFILE DATA ---
+        async function fetchProfileData() {
+            try {
+                const response = await fetch(`/api/profile?emp_id=${user.emp_id}`);
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Populate UI
+                    updateUI(data);
+                    // Store for Cancel action
+                    originalData = data;
+                } else {
+                    console.error("Failed to load profile");
+                }
+            } catch (error) {
+                console.error("Error fetching profile:", error);
+            }
+        }
+
+        function updateUI(data) {
+            // Sidebar
+            if (document.getElementById("sidebar-name")) document.getElementById("sidebar-name").innerText = data.name || "User";
+            if (document.getElementById("sidebar-role")) document.getElementById("sidebar-role").innerText = data.role || "Employee";
+
+            const avatarUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(data.name || 'User')}&background=135bec&color=fff`;
+            if (document.getElementById("sidebar-avatar")) document.getElementById("sidebar-avatar").style.backgroundImage = `url('${avatarUrl}')`;
+            if (document.getElementById("profile-avatar-large")) document.getElementById("profile-avatar-large").style.backgroundImage = `url('${avatarUrl}')`;
+
+            // Main Profile Card
+            document.getElementById("display-name").innerText = data.name || "User";
+            const department = data.department || data.dept;
+            document.getElementById("display-role").innerText = `${data.role || 'Employee'} • ${department || 'General'}`;
+
+            // Form Inputs
+            document.getElementById("input-name").value = data.name || "";
+            document.getElementById("input-emp-id").value = data.emp_id || "";
+            document.getElementById("input-email").value = data.email || "";
+            document.getElementById("input-phone").value = data.phone || "";
+            document.getElementById("input-dept").value = department || "";
+            document.getElementById("input-location").value = data.location || "";
+        }
+
+        // --- 4. EDIT / CANCEL LOGIC ---
+        function toggleEditMode(isEditing) {
+            const inputs = document.querySelectorAll('.edit-input');
+            const editBtn = document.getElementById('edit-btn');
+            const saveCancelGroup = document.getElementById('save-cancel-group');
+
+            inputs.forEach(input => {
+                // Prevent editing of Employee ID and Department (usually fixed)
+                if (input.name !== 'emp_id' && input.name !== 'dept') {
+                    input.readOnly = !isEditing;
+
+                    if (isEditing) {
+                        // Apply Edit Styles
+                        input.classList.remove('bg-background-light', 'dark:bg-background-dark', 'border-transparent', 'focus:ring-0');
+                        input.classList.add('bg-card-light', 'dark:bg-card-dark', 'border-border-light', 'dark:border-border-dark', 'focus:ring-2', 'focus:ring-primary', 'focus:border-primary');
+                    } else {
+                        // Revert to Read-only Styles
+                        input.value = originalData[input.name] || ""; // Reset value on cancel
+                        input.classList.add('bg-background-light', 'dark:bg-background-dark', 'border-transparent', 'focus:ring-0');
+                        input.classList.remove('bg-card-light', 'dark:bg-card-dark', 'border-border-light', 'dark:border-border-dark', 'focus:ring-2', 'focus:ring-primary', 'focus:border-primary');
+                    }
+                }
+            });
+
+            if (isEditing) {
+                editBtn.classList.add('hidden');
+                saveCancelGroup.classList.remove('hidden');
+            } else {
+                editBtn.classList.remove('hidden');
+                saveCancelGroup.classList.add('hidden');
+            }
+        }
+
+        // --- 5. SAVE CHANGES ---
+        async function saveProfileChanges() {
+            const updatedData = {
+                emp_id: user.emp_id,
+                name: document.getElementById("input-name").value,
+                email: document.getElementById("input-email").value,
+                phone: document.getElementById("input-phone").value,
+                location: document.getElementById("input-location").value,
+                dept: document.getElementById("input-dept").value // Included for completeness, though often read-only
+            };
+
+            try {
+                const response = await fetch("/api/profile", {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(updatedData)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    showToast("Profile updated successfully!");
+                    originalData = result.user; // Update local reference
+
+                    // Update LocalStorage for other pages to see name change immediately
+                    const lsUser = JSON.parse(localStorage.getItem("user"));
+                    lsUser.name = result.user.name;
+                    localStorage.setItem("user", JSON.stringify(lsUser));
+
+                    updateUI(result.user);
+
+                    // Exit edit mode manually (without resetting values)
+                    const inputs = document.querySelectorAll('.edit-input');
+                    inputs.forEach(input => {
+                        input.readOnly = true;
+                        input.classList.add('bg-background-light', 'dark:bg-background-dark', 'border-transparent', 'focus:ring-0');
+                        input.classList.remove('bg-card-light', 'dark:bg-card-dark', 'border-border-light', 'dark:border-border-dark', 'focus:ring-2', 'focus:ring-primary', 'focus:border-primary');
+                    });
+                    document.getElementById('edit-btn').classList.remove('hidden');
+                    document.getElementById('save-cancel-group').classList.add('hidden');
+
+                } else {
+                    alert("Error: " + result.message);
+                }
+            } catch (error) {
+                console.error("Save error:", error);
+                alert("Failed to save changes.");
+            }
+        }
+
+        // --- 6. NAVIGATION & LOGOUT ---
+        const links = document.querySelectorAll(".sidebar-link");
+        links.forEach(link => {
+            link.addEventListener("click", () => {
+                links.forEach(l => l.classList.remove("sidebar-active"));
+                link.classList.remove("text-text-muted-light", "dark:text-text-muted-dark");
+                link.classList.add("sidebar-active");
+            });
+        });
+
+        function handleLogout() {
+            if (confirm("Are you sure you want to log out?")) {
+                localStorage.removeItem("user");
+                window.location.href = "UserLogin.html";
+            }
+        }
+    </script>
+</body>
+
+</html>

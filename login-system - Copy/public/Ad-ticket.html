@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<!-- ==========================================
+     ADMIN TICKET MANAGEMENT PAGE
+     ==========================================
+     Interface for viewing and managing hardware requests/tickets
+     Features: Status updates, filtering, search, ticket details
+========================================== -->
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>AAI Hardware - Ticket Management</title>
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#135bec",
+                        "primary-hover": "#0e4bce",
+                        "background-light": "#f6f6f8",
+                        "background-dark": "#101622",
+                        "card-light": "#ffffff",
+                        "card-dark": "#1e293b",
+                        "text-main-light": "#0d121b",
+                        "text-main-dark": "#f8fafc",
+                        "text-muted-light": "#4c669a",
+                        "text-muted-dark": "#94a3b8",
+                        "border-light": "#e2e8f0",
+                        "border-dark": "#334155",
+                    },
+                    fontFamily: {
+                        "display": ["Plus Jakarta Sans", "sans-serif"]
+                    },
+                },
+            },
+        }
+        const savedTheme = localStorage.getItem("theme");
+        if (savedTheme === "dark" || (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add("dark");
+        } else {
+            document.documentElement.classList.remove("dark");
+        }
+    </script>
+    <style>
+        .animated-btn { transition: all .25s ease; transform-origin: center; }
+        .animated-btn:hover { transform: translateY(-2px) scale(1.01); box-shadow: 0 12px 25px rgba(0, 0, 0, .08); }
+        .animated-btn:active { transform: scale(.97); }
+        .glow-primary:hover { box-shadow: 0 0 0 6px rgba(19, 91, 236, 0.12); }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .dark ::-webkit-scrollbar-thumb { background: #475569; }
+        .sidebar-active { background: linear-gradient(120deg, #135bec, #0e4bce); color: white !important; box-shadow: 0 10px 20px rgba(19, 91, 236, .25); }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark text-text-main-light dark:text-text-main-dark font-display antialiased overflow-hidden">
+    <script src="components/toast.js"></script>
+
+    <div class="flex h-screen w-full">
+        <aside class="w-64 h-full flex flex-col bg-card-light dark:bg-card-dark border-r border-border-light dark:border-border-dark flex-shrink-0 z-20">
+            <div class="p-6 flex items-center gap-3">
+                <div class="p-2 rounded-lg flex items-center justify-center">
+                    <img src="logo.jpeg" class="w-10 h-10 object-cover rounded" alt="icon">
+                </div>
+                <div>
+                    <a href="Ad-dash.html">
+                        <h1 class="text-base font-bold leading-none tracking-tight">AAI Hardware</h1>
+                    </a>
+                    <p class="text-xs text-text-muted-light dark:text-text-muted-dark mt-1">Admin Portal</p>
+                </div>
+            </div>
+            <nav class="flex-1 px-4 py-4 flex flex-col gap-2 overflow-y-auto">
+                <a href="Ad-dash.html" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg"><span class="material-symbols-outlined">dashboard</span> Dashboard</a>
+                <a href="Ad-ticket.html" class="sidebar-link sidebar-active flex items-center gap-3 px-3 py-2.5 rounded-lg"><span class="material-symbols-outlined">confirmation_number</span> Ticket Management</a>
+                <a href="Ad-inventory.html" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg"><span class="material-symbols-outlined">inventory_2</span> Inventory</a>
+                <a href="Ad-settings.html" class="sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-lg"><span class="material-symbols-outlined">settings</span> Settings</a>
+            </nav>
+            <a href="Ad-profile_dashboard.html" class="animated-btn gap-4 border-t border-border-light dark:border-border-dark block">
+                <div class="flex items-center gap-3 p-2 rounded-lg hover:bg-background-light dark:hover:bg-background-dark cursor-pointer transition-colors">
+                    <div class="relative w-10 h-10 rounded-full overflow-hidden bg-gray-200">
+                        <img id="sidebar-avatar" alt="Admin user profile picture" class="object-cover w-full h-full" src="https://ui-avatars.com/api/?name=Admin&background=random" />
+                    </div>
+                    <div class="flex flex-col overflow-hidden">
+                        <p id="sidebar-name" class="text-sm font-bold truncate">Loading...</p>
+                        <p id="sidebar-role" class="text-xs text-text-muted-light dark:text-text-muted-dark truncate">...</p>
+                    </div>
+                </div>
+            </a>
+        </aside>
+
+        <main class="flex-1 flex flex-col h-screen overflow-y-auto bg-background-light dark:bg-background-dark relative">
+            <header class="h-16 flex items-center justify-between px-6 bg-card-light dark:bg-card-dark border-b border-border-light dark:border-border-dark flex-shrink-0">
+                <div class="flex items-center w-full max-w-md"></div>
+                <div class="flex items-center gap-4">
+                    <button id="dateButton" class="animated-btn flex items-center gap-2 px-3 py-2 rounded-lg bg-background-light dark:bg-background-dark hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors text-sm font-medium">
+                        <span class="material-symbols-outlined text-[18px]">calendar_today</span>
+                        <span id="dateText"></span>
+                    </button>
+                    <button onclick="handleLogout()" class="animated-btn flex items-center gap-2 px-3 py-2 rounded-lg bg-red-500 hover:bg-red-600 text-white text-sm font-medium transition-all">
+                        <span class="material-symbols-outlined text-[18px]">logout</span> Logout
+                    </button>
+                </div>
+            </header>
+
+            <div class="px-8 py-8 w-full max-w-[1400px] mx-auto flex flex-col gap-6">
+                <div class="flex flex-wrap items-center justify-between gap-4">
+                    <div class="flex flex-col gap-1">
+                        <h2 class="text-[#0d121b] dark:text-white text-3xl font-extrabold tracking-tight">Ticket Management</h2>
+                        <p class="text-[#4c669a] text-base font-medium">Manage priority, status, and assignment</p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end bg-white dark:bg-[#151c2b] p-5 rounded-xl border border-[#cfd7e7] dark:border-gray-800 shadow-sm">
+                    <div class="md:col-span-4 lg:col-span-5 flex flex-col gap-1.5">
+                        <label class="text-xs font-bold text-[#4c669a] uppercase">Search</label>
+                        <div class="relative group">
+                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-[#4c669a] material-symbols-outlined text-[20px]">search</span>
+                            <input id="search-input" class="w-full pl-10 pr-4 py-2.5 bg-background-light dark:bg-gray-900 border border-[#cfd7e7] dark:border-gray-700 rounded-lg text-sm text-[#0d121b] dark:text-white focus:ring-2 focus:ring-primary outline-none" placeholder="Search by Ticket ID or Asset Name..." />
+                        </div>
+                    </div>
+                    <div class="md:col-span-3 lg:col-span-2 flex flex-col gap-1.5">
+                        <label class="text-xs font-bold text-[#4c669a] uppercase">Department</label>
+                        <select id="filter-dept" class="w-full pl-3 pr-8 py-2.5 bg-background-light dark:bg-gray-900 border border-[#cfd7e7] dark:border-gray-700 rounded-lg text-sm focus:ring-2 focus:ring-primary outline-none cursor-pointer">
+                            <option value="">Loading...</option>
+                        </select>
+                    </div>
+                    <div class="md:col-span-3 lg:col-span-2 flex flex-col gap-1.5">
+                        <label class="text-xs font-bold text-[#4c669a] uppercase">Status</label>
+                        <select id="filter-status" class="w-full pl-3 pr-8 py-2.5 bg-background-light dark:bg-gray-900 border border-[#cfd7e7] dark:border-gray-700 rounded-lg text-sm focus:ring-2 focus:ring-primary outline-none cursor-pointer">
+                            <option value="">Loading...</option>
+                        </select>
+                    </div>
+                    <div class="md:col-span-2 lg:col-span-3 flex flex-col gap-1.5">
+                        <label class="text-xs font-bold text-transparent uppercase">Actions</label>
+                        <div class="flex gap-2">
+                            <button onclick="applyFilters()" class="animated-btn flex-1 flex items-center justify-center gap-2 px-4 py-2.5 bg-primary hover:bg-primary-hover text-white rounded-lg text-sm font-semibold transition-all">
+                                <span class="material-symbols-outlined text-[18px]">filter_alt</span>
+                                Apply
+                            </button>
+                            <button onclick="clearFilters()" class="animated-btn flex items-center justify-center gap-1 px-3 py-2.5 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg text-sm font-semibold transition-all">
+                                <span class="material-symbols-outlined text-[18px]">clear</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Active Filters Display -->
+                <div id="active-filters" class="hidden flex-wrap gap-2 items-center">
+                    <span class="text-xs font-bold text-[#4c669a] uppercase">Active Filters:</span>
+                </div>
+
+                <div class="bg-white dark:bg-[#151c2b] rounded-xl border border-[#cfd7e7] dark:border-gray-800 shadow-sm overflow-hidden flex flex-col flex-1 min-h-[500px]">
+                    <div class="overflow-x-auto">
+                        <table class="w-full min-w-[1000px]">
+                            <thead>
+                                <tr class="bg-gray-50 dark:bg-gray-900 border-b border-[#cfd7e7] dark:border-gray-700">
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-[#4c669a] uppercase w-[120px]">Ticket ID</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-[#4c669a] uppercase w-[120px]">Date</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-[#4c669a] uppercase w-[130px]">Asset</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-[#4c669a] uppercase w-[100px]">Department</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-[#4c669a] uppercase w-[140px]">Priority</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-[#4c669a] uppercase w-[180px]">Status</th>
+                                    <th class="px-6 py-4 text-left text-xs font-bold text-[#4c669a] uppercase w-[200px]">Assignment</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ticket-table-body" class="divide-y divide-[#cfd7e7] dark:divide-gray-800">
+                                <tr><td colspan="6" class="px-6 py-8 text-center text-[#4c669a]">Loading tickets...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="flex items-center justify-between px-6 py-4 border-t border-[#cfd7e7] dark:border-gray-800 bg-gray-50 dark:bg-gray-900/50 mt-auto">
+                        <p class="text-sm text-[#4c669a]">Total: <span id="total-results" class="font-bold text-[#0d121b] dark:text-white">0</span></p>
+                        <div class="flex gap-2">
+                            <button id="prev-btn" onclick="changePage(-1)" class="px-4 py-2 text-sm font-bold bg-white border border-[#cfd7e7] rounded-lg disabled:opacity-50">Prev</button>
+                            <button id="next-btn" onclick="changePage(1)" class="px-4 py-2 text-sm font-bold bg-white border border-[#cfd7e7] rounded-lg disabled:opacity-50">Next</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="config.js"></script>
+    <script>
+        let currentPage = 1;
+        const limit = 5;
+        let totalItems = 0;
+        let searchTimeout = null;
+
+        // --- AUTH CHECK & SIDEBAR UPDATE ---
+        const user = JSON.parse(localStorage.getItem("user"));
+        if (!user || user.role !== "Admin") {
+            window.location.href = "AdminLogin.html";
+        } else {
+            // UPDATE SIDEBAR PROFILE
+            if (document.getElementById("sidebar-name")) {
+                document.getElementById("sidebar-name").innerText = user.name || "Admin";
+            }
+            if (document.getElementById("sidebar-role")) {
+                document.getElementById("sidebar-role").innerText = user.role || "Administrator";
+            }
+            // Dynamic Avatar based on name
+            if (document.getElementById("sidebar-avatar") && user.name) {
+                document.getElementById("sidebar-avatar").src =
+                    `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=135bec&color=fff`;
+            }
+        }
+
+        // --- FETCH TICKETS ---
+        async function loadTickets(page = 1) {
+            currentPage = page;
+            const search = document.getElementById("search-input").value.trim();
+            const dept = document.getElementById("filter-dept").value;
+            const status = document.getElementById("filter-status").value;
+
+            console.log("Frontend filters:", { search, dept, status });
+
+            // Use encodeURIComponent to handle special characters safely
+            const url = `/api/tickets?page=${page}&limit=${limit}&search=${encodeURIComponent(search)}&dept=${encodeURIComponent(dept)}&status=${encodeURIComponent(status)}`;
+            
+            console.log("Request URL:", url);
+
+            try {
+                const res = await fetch(url);
+                if (!res.ok) throw new Error("Failed to fetch data");
+                
+                const data = await res.json();
+                console.log("Received data:", data);
+                renderTable(data.tickets);
+                totalItems = data.total;
+                updatePagination(data.total);
+            } catch (err) {
+                console.error(err);
+                document.getElementById("ticket-table-body").innerHTML = `<tr><td colspan="7" class="px-6 py-8 text-center text-red-500">Error loading tickets. Ensure server is running.</td></tr>`;
+            }
+        }
+
+        // --- RENDER TABLE ---
+        function renderTable(tickets) {
+            const tbody = document.getElementById("ticket-table-body");
+            tbody.innerHTML = "";
+
+            if (tickets.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="px-6 py-8 text-center text-gray-500">No tickets found.</td></tr>`;
+                return;
+            }
+
+            tickets.forEach(t => {
+                const date = new Date(t.order_date).toLocaleDateString();
+                
+                // Status Color Logic
+                let statusClass = "bg-gray-100 text-gray-700 border-gray-200";
+                if(t.status === 'Pending') statusClass = "bg-yellow-50 text-yellow-700 border-yellow-200";
+                else if(t.status === 'Approved') statusClass = "bg-blue-50 text-blue-700 border-blue-200";
+                else if(t.status === 'Completed') statusClass = "bg-green-50 text-green-700 border-green-200";
+                else if(t.status === 'Rejected') statusClass = "bg-red-50 text-red-700 border-red-200";
+
+                const adminLocked = t.assigned || t.status === 'Completed';
+
+                const row = `
+                <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors">
+                    <td class="px-6 py-4 font-bold text-[#0d121b] dark:text-white">#${t.request_id}</td>
+                    <td class="px-6 py-4 text-sm text-[#4c669a]">${date}</td>
+                    <td class="px-6 py-4">
+                        <span class="text-sm font-bold text-[#0d121b] dark:text-white">${t.asset_name}</span>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="text-sm text-[#4c669a]">${t.dept}</span>
+                    </td>
+                    <td class="px-6 py-4">
+                        <select onchange="updatePriority('${t.request_id}', this.value)" ${adminLocked ? 'disabled' : ''}
+                            class="text-xs font-bold rounded px-2 py-1 border border-gray-200 bg-white ${adminLocked ? 'cursor-not-allowed opacity-70' : 'cursor-pointer'} focus:ring-2 focus:ring-primary outline-none
+                            ${t.priority === 'High' ? 'text-red-600' : t.priority === 'Medium' ? 'text-orange-600' : 'text-green-600'}">
+                            <option value="Low" ${t.priority === 'Low' ? 'selected' : ''}>Low</option>
+                            <option value="Medium" ${t.priority === 'Medium' ? 'selected' : ''}>Medium</option>
+                            <option value="High" ${t.priority === 'High' ? 'selected' : ''}>High</option>
+                        </select>
+                    </td>
+                    <td class="px-6 py-4">
+                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold ${statusClass}">
+                            ${t.status}
+                        </span>
+                    </td>
+                    <td class="px-6 py-4">
+                        <select onchange="updateAssignment('${t.request_id}', this.value)" ${adminLocked ? 'disabled' : ''} class="w-full bg-white border border-gray-300 rounded text-sm px-2 py-1 ${adminLocked ? 'cursor-not-allowed opacity-70' : 'cursor-pointer'} focus:ring-2 focus:ring-primary outline-none">
+                            <option value="Unassigned" ${!t.assigned ? 'selected' : ''}>Unassigned</option>
+                            <option value="Assigned" ${t.assigned ? 'selected' : ''}>Assigned</option>
+                        </select>
+                    </td>
+                </tr>`;
+                tbody.innerHTML += row;
+            });
+        }
+
+        // --- UPDATE HANDLERS ---
+        async function updateStatus(id, val) {
+            try {
+                const res = await fetch(`/api/tickets/${id}/status`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ status: val })
+                });
+                if(res.ok) loadTickets(currentPage);
+                else alert("Failed to update status");
+            } catch(e) { console.error(e); }
+        }
+
+        async function updatePriority(id, val) {
+            try {
+                const res = await fetch(`/api/tickets/${id}/priority`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ priority: val })
+                });
+                if(res.ok) loadTickets(currentPage);
+                else alert("Failed to update priority");
+            } catch(e) { console.error(e); }
+        }
+
+        async function updateAssignment(id, val) {
+            const assigned = val === "Assigned";
+            try {
+                const res = await fetch(`/api/tickets/${id}/assignment`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ assigned })
+                });
+                if(res.ok) loadTickets(currentPage);
+                else alert("Failed to update assignment");
+            } catch(e) { console.error(e); }
+        }
+
+        // --- UTILS ---
+        function applyFilters() {
+            loadTickets(1);
+            updateActiveFiltersDisplay();
+        }
+
+        function updateActiveFiltersDisplay() {
+            const search = document.getElementById("search-input").value.trim();
+            const dept = document.getElementById("filter-dept").value;
+            const status = document.getElementById("filter-status").value;
+            
+            const activeFiltersDiv = document.getElementById("active-filters");
+            const hasFilters = search || dept || status;
+            
+            if (hasFilters) {
+                activeFiltersDiv.classList.remove("hidden");
+                activeFiltersDiv.classList.add("flex");
+                
+                let filterHTML = '<span class="text-xs font-bold text-[#4c669a] uppercase">Active Filters:</span>';
+                
+                if (search) {
+                    filterHTML += `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-primary/10 text-primary border border-primary/20">
+                        <span class="material-symbols-outlined text-[14px]">search</span>
+                        ${search}
+                    </span>`;
+                }
+                
+                if (dept) {
+                    filterHTML += `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200">
+                        <span class="material-symbols-outlined text-[14px]">business</span>
+                        ${dept}
+                    </span>`;
+                }
+                
+                if (status) {
+                    filterHTML += `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-green-50 text-green-700 border border-green-200">
+                        <span class="material-symbols-outlined text-[14px]">check_circle</span>
+                        ${status}
+                    </span>`;
+                }
+                
+                activeFiltersDiv.innerHTML = filterHTML;
+            } else {
+                activeFiltersDiv.classList.add("hidden");
+                activeFiltersDiv.classList.remove("flex");
+            }
+        }
+
+        function updatePagination(total) {
+            document.getElementById("total-results").innerText = total;
+            document.getElementById("prev-btn").disabled = currentPage <= 1;
+            document.getElementById("next-btn").disabled = currentPage >= Math.ceil(total / limit);
+        }
+
+        function changePage(dir) {
+            loadTickets(currentPage + dir);
+        }
+
+        function clearFilters() {
+            document.getElementById("search-input").value = "";
+            document.getElementById("filter-dept").value = "";
+            document.getElementById("filter-status").value = "";
+            updateActiveFiltersDisplay();
+            loadTickets(1);
+        }
+
+        function setToday() {
+            document.getElementById("dateText").innerText = new Date().toLocaleDateString();
+        }
+
+        // --- LOAD FILTER OPTIONS FROM DATABASE ---
+        async function loadFilterOptions() {
+            try {
+                const res = await fetch('/api/tickets/filter-options');
+                if (!res.ok) throw new Error("Failed to fetch filter options");
+                
+                const data = await res.json();
+                console.log("Filter options loaded:", data);
+                
+                // Populate Department dropdown
+                const deptSelect = document.getElementById("filter-dept");
+                deptSelect.innerHTML = '<option value="">All Depts</option>';
+                data.departments.forEach(dept => {
+                    const option = document.createElement("option");
+                    option.value = dept;
+                    option.textContent = dept;
+                    deptSelect.appendChild(option);
+                });
+                
+                // Populate Status dropdown
+                const statusSelect = document.getElementById("filter-status");
+                statusSelect.innerHTML = '<option value="">All Statuses</option>';
+                data.statuses.forEach(status => {
+                    const option = document.createElement("option");
+                    option.value = status;
+                    option.textContent = status;
+                    statusSelect.appendChild(option);
+                });
+                
+            } catch (err) {
+                console.error("Error loading filter options:", err);
+                // Keep default options if fetch fails
+            }
+        }
+
+        
+
+        // --- INIT ---
+        setToday();
+        loadFilterOptions(); // Load filter options first
+        loadTickets(1);
+    </script>
+</body>
+</html>
