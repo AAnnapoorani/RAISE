@@ -149,12 +149,6 @@ http://localhost:3000
 
 ---
 
-## Contributors
-
-Developed as part of an academic / institutional project.
-Feel free to contribute by submitting pull requests or reporting issues.
-
----
 
 
 
